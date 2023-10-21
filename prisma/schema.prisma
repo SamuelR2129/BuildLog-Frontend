@@ -11,15 +11,15 @@ datasource db {
 }
 
 model Post {
-    id        Int      @id @default(autoincrement())
+    id        String      @id @default(uuid())
     name      String
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-
-    createdBy   User   @relation(fields: [createdById], references: [id])
+    createdBy   User   @relation(fields: [createdById], references: [id], onDelete: Cascade)
     createdById String
 
     @@index([name])
+    @@index([createdById])
 }
 
 // Necessary for Next auth
@@ -59,6 +59,8 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
+
+    //non-next auth
     posts         Post[]
 }
 

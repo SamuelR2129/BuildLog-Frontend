@@ -10,16 +10,16 @@ datasource db {
   relationMode = "prisma"
 }
 
-model Post {
-    id        String      @id @default(uuid())
-    name      String
+model Tweet {
+    id        String   @id @default(uuid())
+    userId    String
+    content   String
     createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    createdBy   User   @relation(fields: [createdById], references: [id], onDelete: Cascade)
-    createdById String
 
-    @@index([name])
-    @@index([createdById])
+    user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([createdAt, id])
+    @@index([userId])
 }
 
 // Necessary for Next auth
@@ -61,7 +61,7 @@ model User {
     sessions      Session[]
 
     //non-next auth
-    posts         Post[]
+    tweets         Tweet[]
 }
 
 model VerificationToken {

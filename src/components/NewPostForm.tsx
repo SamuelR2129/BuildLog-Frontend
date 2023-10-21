@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useLayoutEffect, useRef, useState } from "react";
 import { Button } from "./Button";
 import { useSession } from "next-auth/react";
 
@@ -22,7 +16,6 @@ export const NewPostForm = () => {
 };
 
 const Form = () => {
-  const session = useSession();
   const [inputValue, setInputValue] = useState<string>("");
   const textAreaRef = useRef<HTMLTextAreaElement>();
   const inputRef = useCallback((textArea: HTMLTextAreaElement) => {

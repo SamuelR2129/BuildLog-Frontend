@@ -29,14 +29,41 @@ const Form = () => {
     updateTextAreaSize(textArea);
     textAreaRef.current = textArea;
   }, []);
+  const trpcUtils = api.useUtils();
+  const session = useSession();
 
   useLayoutEffect(() => {
     updateTextAreaSize(textAreaRef.current);
   }, [inputValue]);
 
   const createTweet = api.tweet.create.useMutation({
-    onSuccess: () => {
+    onSuccess: (newTweet) => {
       setInputValue("");
+
+      if (session.status !== "authenticated") return;
+
+      trpcUtils.tweet.infiniteFeed.setInfiniteData({}, (oldData) => {
+        if (!oldData?.pages[0]) return;
+
+        const newCacheTweet = {
+          ...newTweet,
+          user: {
+            id: session.data.user.id,
+            name: session.data.user.name ?? null,
+          },
+        };
+
+        return {
+          ...oldData,
+          pages: [
+            {
+              ...oldData.pages[0],
+              tweets: [newCacheTweet, ...oldData.pages[0].tweets],
+            },
+            ...oldData.pages.slice(1),
+          ],
+        };
+      });
     },
   });
 

@@ -18,8 +18,8 @@ model Tweet {
 
     user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    @@unique([createdAt, id])
     @@index([userId])
+    @@unique([createdAt, id])
 }
 
 // Necessary for Next auth

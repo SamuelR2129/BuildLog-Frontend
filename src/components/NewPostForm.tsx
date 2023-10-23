@@ -1,6 +1,13 @@
-import React, { useCallback, useLayoutEffect, useRef, useState } from "react";
+import React, {
+  type FormEvent,
+  useCallback,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { Button } from "./Button";
 import { useSession } from "next-auth/react";
+import { api } from "~/utils/api";
 
 const updateTextAreaSize = (textArea?: HTMLTextAreaElement) => {
   if (!textArea) return;
@@ -11,7 +18,7 @@ const updateTextAreaSize = (textArea?: HTMLTextAreaElement) => {
 
 export const NewPostForm = () => {
   const session = useSession();
-  //   if(session.status !== 'authenticated') return null;
+  if (session.status !== "authenticated") return null;
   return <Form />;
 };
 
@@ -27,8 +34,23 @@ const Form = () => {
     updateTextAreaSize(textAreaRef.current);
   }, [inputValue]);
 
+  const createTweet = api.tweet.create.useMutation({
+    onSuccess: () => {
+      setInputValue("");
+    },
+  });
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+
+    createTweet.mutate({ content: inputValue });
+  };
+
   return (
-    <form className="flex flex-col gap-2 border-b px-4 py-2">
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col gap-2 border-b px-4 py-2"
+    >
       <div className="flex gap-4 ">
         <textarea
           ref={inputRef}

@@ -1,4 +1,6 @@
 import InfiniteScroll from "react-infinite-scroll-component";
+import { LoadingSpinner } from "./LoadingSpinner";
+import { useSession } from "next-auth/react";
 
 export type Tweet = {
   id: string;
@@ -46,7 +48,7 @@ export const InfiniteTweetList = ({
   fetchNewTweets,
   hasMore = false,
 }: InfiniteTweetListProps) => {
-  if (isLoading) return <h1>Loading...</h1>;
+  if (isLoading) return <LoadingSpinner />;
   if (isError) return <h1>Error</h1>;
   if (!tweets || tweets.length === 0) {
     return (
@@ -60,7 +62,7 @@ export const InfiniteTweetList = ({
         dataLength={tweets.length}
         next={fetchNewTweets}
         hasMore={hasMore}
-        loader={"loading..."}
+        loader={<LoadingSpinner />}
       >
         {tweets.map((tweet) => {
           return (

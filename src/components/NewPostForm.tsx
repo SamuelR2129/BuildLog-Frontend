@@ -78,13 +78,23 @@ const Form = () => {
       onSubmit={handleSubmit}
       className="flex flex-col gap-2 border-b px-4 py-2"
     >
-      <div className="flex gap-4 ">
+      <div className="flex flex-col gap-4">
+        <div className="flex gap-2">
+          <div className="px-1 py-1">
+            <span>Hours</span>
+            <input className="w-full resize-none overflow-hidden border border-gray-200 pl-2 text-lg font-thin" />
+          </div>
+          <div className="px-1 py-1">
+            <span>Costs</span>
+            <input className="w-full resize-none overflow-hidden border border-gray-200 pl-2 text-lg font-thin" />
+          </div>
+        </div>
         <textarea
           ref={inputRef}
           style={{ height: 0 }}
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
-          className="text-grey-200 flex-grow resize-none overflow-hidden p-4 text-lg font-thin outline-none"
+          className="w-full flex-grow  resize-none overflow-hidden border border-gray-200 p-4 text-lg font-thin  outline-none"
           placeholder="What's happening?"
         />
       </div>

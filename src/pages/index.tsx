@@ -1,7 +1,7 @@
 import { type NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
-import { InfiniteTweetList, Tweet } from "~/components/InfiniteTweetList";
+import { InfiniteTweetList, type Tweet } from "~/components/InfiniteTweetList";
 import { NewPostForm } from "~/components/NewPostForm";
 import { api } from "~/utils/api";
 

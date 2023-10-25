@@ -46,11 +46,19 @@ export const tweetRouter = createTRPCRouter({
         nextCursor,
       };
     }),
+
   create: protectedProcedure
-    .input(z.object({ content: z.string() }))
-    .mutation(async ({ input: { content }, ctx }) => {
+    .input(
+      z.object({
+        content: z.string(),
+        costs: z.string(),
+        hours: z.string(),
+        buildSite: z.string(),
+      }),
+    )
+    .mutation(async ({ input: { content, costs, hours, buildSite }, ctx }) => {
       return await ctx.db.tweet.create({
-        data: { content, userId: ctx.session.user.id },
+        data: { content, costs, hours, buildSite, userId: ctx.session.user.id },
       });
     }),
 

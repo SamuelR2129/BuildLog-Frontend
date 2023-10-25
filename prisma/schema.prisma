@@ -15,6 +15,9 @@ model Tweet {
     userId    String
     content   String
     createdAt DateTime @default(now())
+    hours     String   @default("")
+    costs     String   @default("")
+    buildSite String   @default("")
 
     user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 

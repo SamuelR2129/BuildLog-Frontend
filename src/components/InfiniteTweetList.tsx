@@ -1,6 +1,5 @@
 import InfiniteScroll from "react-infinite-scroll-component";
 import { LoadingSpinner } from "./LoadingSpinner";
-import { useSession } from "next-auth/react";
 
 export type Tweet = {
   id: string;

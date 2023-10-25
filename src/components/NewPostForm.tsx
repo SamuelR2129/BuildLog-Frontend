@@ -23,7 +23,10 @@ export const NewPostForm = () => {
 };
 
 const Form = () => {
-  const [inputValue, setInputValue] = useState<string>("");
+  const [contentValue, setContentValue] = useState<string>("");
+  const [hoursValue, setHoursValue] = useState<string>("");
+  const [costsValue, setCostsValue] = useState<string>("");
+  const [buildSiteValue, setBuildSiteValue] = useState<string>("");
   const textAreaRef = useRef<HTMLTextAreaElement>();
   const inputRef = useCallback((textArea: HTMLTextAreaElement) => {
     updateTextAreaSize(textArea);
@@ -34,11 +37,11 @@ const Form = () => {
 
   useLayoutEffect(() => {
     updateTextAreaSize(textAreaRef.current);
-  }, [inputValue]);
+  }, [contentValue]);
 
   const createTweet = api.tweet.create.useMutation({
     onSuccess: (newTweet) => {
-      setInputValue("");
+      setContentValue("");
 
       if (session.status !== "authenticated") return;
 
@@ -70,7 +73,12 @@ const Form = () => {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
-    createTweet.mutate({ content: inputValue });
+    createTweet.mutate({
+      content: contentValue,
+      hours: hoursValue,
+      costs: costsValue,
+      buildSite: buildSiteValue,
+    });
   };
 
   return (
@@ -82,21 +90,39 @@ const Form = () => {
         <div className="flex gap-2">
           <div className="px-1 py-1">
             <span>Hours</span>
-            <input className="w-full resize-none overflow-hidden border border-gray-200 pl-2 text-lg font-thin" />
+            <input
+              value={hoursValue}
+              onChange={(e) => setHoursValue(e.target.value)}
+              className="w-full resize-none overflow-hidden border border-gray-200 pl-2 text-lg font-thin"
+            />
           </div>
           <div className="px-1 py-1">
             <span>Costs</span>
-            <input className="w-full resize-none overflow-hidden border border-gray-200 pl-2 text-lg font-thin" />
+            <input
+              value={costsValue}
+              onChange={(e) => setCostsValue(e.target.value)}
+              className="w-full resize-none overflow-hidden border border-gray-200 pl-2 text-lg font-thin"
+            />
           </div>
         </div>
         <textarea
           ref={inputRef}
           style={{ height: 0 }}
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
+          value={contentValue}
+          onChange={(e) => setContentValue(e.target.value)}
           className="w-full flex-grow  resize-none overflow-hidden border border-gray-200 p-4 text-lg font-thin  outline-none"
           placeholder="What's happening?"
         />
+        <select
+          className="w-full resize-none overflow-hidden border border-gray-200 p-1 pl-2 text-lg font-thin outline-none"
+          placeholder="Choose build site"
+          value={buildSiteValue}
+          onChange={(e) => setBuildSiteValue(e.target.value)}
+        >
+          <option value="">Choose a build site.</option>
+          <option value="34 Thompson Road">34 Thompson Road</option>
+          <option value="7 Rose St">7 Rose St</option>
+        </select>
       </div>
       <Button className="self-end">Submit</Button>
     </form>

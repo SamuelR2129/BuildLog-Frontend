@@ -226,6 +226,7 @@ const Form = () => {
                 type="file"
                 name="image"
                 className="hidden h-9 w-8"
+                multiple
                 onChange={onImageInputChange}
               />
             </div>

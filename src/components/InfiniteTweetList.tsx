@@ -1,6 +1,14 @@
 import InfiniteScroll from "react-infinite-scroll-component";
 import { LoadingSpinner } from "./LoadingSpinner";
 import Image from "next/image";
+import useEmblaCarousel from "embla-carousel-react";
+import EmblaCarousel, {
+  EmblaCarouselType,
+  EmblaOptionsType,
+  EmblaPluginType,
+  EmblaEventType,
+} from "embla-carousel";
+import { EmblaImageCarousel } from "./ImageCarousel";
 
 export type Tweet = {
   id: string;
@@ -46,15 +54,11 @@ const TweetCard = ({
         </div>
         <span className="text-gray-500">{buildSite}</span>
         <p className="whitespace-pre-wap">{content}</p>
-        {imageNames?.map((name, index) => (
-          <Image
-            key={index}
-            src={`https://dnhi95iahz2rb.cloudfront.net/${name}`}
-            width={500}
-            height={500}
-            alt="Picture of the author"
-          />
-        ))}
+        {imageNames && (
+          <div className="py-4">
+            <EmblaImageCarousel imageNames={imageNames} />
+          </div>
+        )}
       </div>
     </li>
   );

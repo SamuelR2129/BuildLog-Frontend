@@ -6,11 +6,11 @@ import React, {
   useState,
   type ChangeEvent,
 } from "react";
-import { Button } from "./Button";
+import { Button } from "../Button";
 import { useSession } from "next-auth/react";
 import { api } from "~/utils/api";
 import { VscDeviceCamera } from "react-icons/vsc";
-import { IconHoverEffect } from "./IconHoverEffect";
+import { IconHoverEffect } from "../IconHoverEffect";
 
 type PostData = {
   content: string;

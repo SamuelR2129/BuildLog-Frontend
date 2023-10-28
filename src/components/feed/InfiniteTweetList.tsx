@@ -1,5 +1,5 @@
 import InfiniteScroll from "react-infinite-scroll-component";
-import { LoadingSpinner } from "./LoadingSpinner";
+import { LoadingSpinner } from "../LoadingSpinner";
 import { EmblaImageCarousel } from "./ImageCarousel";
 
 export type Tweet = {

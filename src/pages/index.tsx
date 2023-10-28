@@ -1,8 +1,11 @@
 import { type NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
-import { InfiniteTweetList, type Tweet } from "~/components/InfiniteTweetList";
-import { NewPostForm } from "~/components/NewPostForm";
+import {
+  InfiniteTweetList,
+  type Tweet,
+} from "~/components/feed/InfiniteTweetList";
+import { NewPostForm } from "~/components/feed/NewPostForm";
 import { api } from "~/utils/api";
 
 const RecentTweets = ({ selectedTab }: { selectedTab?: string }) => {

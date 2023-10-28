@@ -1,6 +1,8 @@
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { subtractDaysFromWeek } from "./tableUtils";
+import { utcToZonedTime } from "date-fns-tz";
 
 type NewPostData = {
   id: string;
@@ -97,10 +99,16 @@ export const tweetRouter = createTRPCRouter({
       },
     ),
 
-  // getLatest: protectedProcedure.query(({ ctx }) => {
-  //   return ctx.db.tweet.findFirst({
-  //     orderBy: { createdAt: "desc" },
-  //     where: { createdBy: { id: ctx.session.user.id } },
-  //   });
-  // }),
+  tableData: protectedProcedure.query(async ({ ctx }) => {
+    const currentDay = utcToZonedTime(new Date(), "Australia/Sydney");
+    const pastDate = subtractDaysFromWeek(currentDay);
+
+    const data = await ctx.db.tweet.findMany({
+      where: {
+        createdAt: {
+          between: [pastDate.previousDaysAndWeek, currentDay],
+        },
+      },
+    });
+  }),
 });

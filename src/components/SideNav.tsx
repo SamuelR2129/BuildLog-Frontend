@@ -13,8 +13,10 @@ export const SideNav = () => {
           <Link href={"/"}>
             <IconHoverEffect>
               <span className="item-center flex gap-4">
-                <VscHome className="h-8 w-8" />
-                <span className="hidden self-center text-lg md:flex">Home</span>
+                <VscHome className="h-8 w-8 fill-blue-500" />
+                <span className="hidden self-center text-lg text-blue-500 md:flex">
+                  Home
+                </span>
               </span>
             </IconHoverEffect>
           </Link>

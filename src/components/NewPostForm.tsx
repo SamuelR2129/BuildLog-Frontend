@@ -200,12 +200,11 @@ const Form = () => {
           style={{ height: 0 }}
           value={contentValue}
           onChange={(e) => setContentValue(e.target.value)}
-          className="w-full flex-grow  resize-none overflow-hidden border border-gray-200 p-4 text-lg font-thin  outline-none"
+          className="w-full flex-grow resize-none  overflow-hidden border border-gray-200 p-4 text-lg font-thin outline-none  focus:border-2 focus:border-blue-500"
           placeholder="What's happening?"
         />
         <select
-          className="w-full resize-none overflow-hidden border border-gray-200 p-2 pl-2 font-thin outline-none"
-          placeholder="Choose build site"
+          className="w-full resize-none overflow-hidden border border-gray-200 bg-white p-2 pl-2 font-thin text-gray-400 outline-none"
           value={buildSiteValue}
           onChange={(e) => setBuildSiteValue(e.target.value)}
         >

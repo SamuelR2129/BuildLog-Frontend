@@ -1,13 +1,5 @@
 import InfiniteScroll from "react-infinite-scroll-component";
 import { LoadingSpinner } from "./LoadingSpinner";
-import Image from "next/image";
-import useEmblaCarousel from "embla-carousel-react";
-import EmblaCarousel, {
-  EmblaCarouselType,
-  EmblaOptionsType,
-  EmblaPluginType,
-  EmblaEventType,
-} from "embla-carousel";
 import { EmblaImageCarousel } from "./ImageCarousel";
 
 export type Tweet = {
@@ -35,7 +27,6 @@ const dateTimeFormatter = new Intl.DateTimeFormat(undefined, {
 });
 
 const TweetCard = ({
-  id,
   user,
   content,
   createdAt,
@@ -43,7 +34,7 @@ const TweetCard = ({
   imageNames,
 }: Tweet) => {
   return (
-    <li className="flex gap-4 border-b px-4 py-4">
+    <li className="flex gap-4 border-b px-4 pt-7">
       <div className="flex flex-grow flex-col">
         <div className="flex gap-1">
           <div className="font-bold">{user.name}</div>

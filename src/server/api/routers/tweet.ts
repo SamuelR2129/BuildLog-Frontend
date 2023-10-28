@@ -18,15 +18,17 @@ export const tweetRouter = createTRPCRouter({
   infiniteFeed: protectedProcedure
     .input(
       z.object({
+        siteFilter: z.string().optional(),
         limit: z.number().optional(),
         cursor: z.object({ id: z.string(), createdAt: z.date() }).optional(),
       }),
     )
-    .query(async ({ input: { limit = 10, cursor }, ctx }) => {
+    .query(async ({ input: { limit = 10, cursor, siteFilter }, ctx }) => {
       const data = await ctx.db.tweet.findMany({
         take: limit + 1,
         cursor: cursor ? { createdAt_id: cursor } : undefined,
         orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+        where: siteFilter ? { buildSite: { contains: siteFilter } } : undefined,
         select: {
           id: true,
           content: true,

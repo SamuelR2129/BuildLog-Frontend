@@ -18,6 +18,7 @@ model Tweet {
     hours     String   @default("")
     costs     String   @default("")
     buildSite String   @default("")
+    imageNames String?
 
     user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 

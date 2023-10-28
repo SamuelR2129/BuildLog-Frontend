@@ -2,6 +2,18 @@ import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
+type NewPostData = {
+  id: string;
+  content: string;
+  createdAt: Date;
+  buildSite: string;
+  imageNames?: string[];
+  user: {
+    name: string | null;
+    id: string;
+  };
+};
+
 export const tweetRouter = createTRPCRouter({
   infiniteFeed: protectedProcedure
     .input(
@@ -18,7 +30,9 @@ export const tweetRouter = createTRPCRouter({
         select: {
           id: true,
           content: true,
+          buildSite: true,
           createdAt: true,
+          imageNames: true,
           user: {
             select: { name: true, id: true },
           },
@@ -36,12 +50,17 @@ export const tweetRouter = createTRPCRouter({
 
       return {
         tweets: data.map((tweet) => {
-          return {
+          const newCacheTweet: NewPostData = {
             id: tweet.id,
             content: tweet.content,
             createdAt: tweet.createdAt,
+            buildSite: tweet.buildSite,
             user: { ...tweet.user },
           };
+
+          if (tweet?.imageNames)
+            newCacheTweet.imageNames = tweet.imageNames.split(",");
+          return newCacheTweet;
         }),
         nextCursor,
       };
@@ -54,13 +73,27 @@ export const tweetRouter = createTRPCRouter({
         costs: z.string(),
         hours: z.string(),
         buildSite: z.string(),
+        imageNames: z.array(z.string()).optional(),
       }),
     )
-    .mutation(async ({ input: { content, costs, hours, buildSite }, ctx }) => {
-      return await ctx.db.tweet.create({
-        data: { content, costs, hours, buildSite, userId: ctx.session.user.id },
-      });
-    }),
+    .mutation(
+      async ({
+        input: { content, costs, hours, buildSite, imageNames },
+        ctx,
+      }) => {
+        const stringifiedImageNames = imageNames?.toString();
+        return await ctx.db.tweet.create({
+          data: {
+            content,
+            costs,
+            hours,
+            buildSite,
+            imageNames: stringifiedImageNames,
+            userId: ctx.session.user.id,
+          },
+        });
+      },
+    ),
 
   // getLatest: protectedProcedure.query(({ ctx }) => {
   //   return ctx.db.tweet.findFirst({

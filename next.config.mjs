@@ -17,6 +17,15 @@ const config = {
     locales: ["en"],
     defaultLocale: "en",
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "dnhi95iahz2rb.cloudfront.net",
+        pathname: "/**",
+      },
+    ],
+  },
 };
 
 export default config;

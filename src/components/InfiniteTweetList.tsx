@@ -1,9 +1,12 @@
 import InfiniteScroll from "react-infinite-scroll-component";
 import { LoadingSpinner } from "./LoadingSpinner";
+import Image from "next/image";
 
 export type Tweet = {
   id: string;
   content: string;
+  buildSite: string;
+  imageNames?: string[];
   createdAt: Date;
   user: { id: string; image?: string; name: string | null };
   children?: React.ReactNode;
@@ -23,7 +26,14 @@ const dateTimeFormatter = new Intl.DateTimeFormat(undefined, {
   timeZone: "Australia/Sydney",
 });
 
-const TweetCard = ({ id, user, content, createdAt }: Tweet) => {
+const TweetCard = ({
+  id,
+  user,
+  content,
+  createdAt,
+  buildSite,
+  imageNames,
+}: Tweet) => {
   return (
     <li className="flex gap-4 border-b px-4 py-4">
       <div className="flex flex-grow flex-col">
@@ -34,7 +44,17 @@ const TweetCard = ({ id, user, content, createdAt }: Tweet) => {
             {dateTimeFormatter.format(createdAt)}
           </span>
         </div>
+        <span className="text-gray-500">{buildSite}</span>
         <p className="whitespace-pre-wap">{content}</p>
+        {imageNames?.map((name, index) => (
+          <Image
+            key={index}
+            src={`https://dnhi95iahz2rb.cloudfront.net/${name}`}
+            width={500}
+            height={500}
+            alt="Picture of the author"
+          />
+        ))}
       </div>
     </li>
   );

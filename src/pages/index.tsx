@@ -9,7 +9,6 @@ import { NewPostForm } from "~/components/feed/NewPostForm";
 import { api } from "~/utils/api";
 
 const RecentTweets = ({ selectedTab }: { selectedTab?: string }) => {
-  debugger;
   const tweets = api.tweet.infiniteFeed.useInfiniteQuery(
     { siteFilter: selectedTab === "all" ? undefined : selectedTab },
     { getNextPageParam: (lastPage) => lastPage.nextCursor },

@@ -8,7 +8,7 @@ export type Tweet = {
   buildSite: string;
   imageNames?: string[];
   createdAt: Date;
-  user: { id: string; image?: string; name: string | null };
+  user: { id: string; image?: string; name: string };
   children?: React.ReactNode;
 };
 

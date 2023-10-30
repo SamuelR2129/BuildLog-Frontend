@@ -27,7 +27,7 @@ type NewPostData = {
   buildSite: string;
   imageNames?: string[];
   user: {
-    name: string | null;
+    name: string;
     id: string;
   };
 };
@@ -114,6 +114,9 @@ const Form = () => {
       trpcUtils.tweet.infiniteFeed.setInfiniteData({}, (oldData) => {
         if (!oldData?.pages[0]) return;
 
+        if (!session.data.user.name)
+          throw new Error("User name missing from session.");
+
         const newCacheTweet: NewPostData = {
           id: newTweet.id,
           content: newTweet.content,
@@ -121,7 +124,7 @@ const Form = () => {
           buildSite: newTweet.buildSite,
           user: {
             id: session.data.user.id,
-            name: session.data.user.name ?? null,
+            name: session.data.user.name,
           },
         };
 

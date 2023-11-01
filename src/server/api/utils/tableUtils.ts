@@ -25,13 +25,13 @@ export type DataMappedToDay = {
 };
 
 export type ComputedDailyData = {
-  monday: TableData[];
-  tuesday: TableData[];
-  wednesday: TableData[];
-  thursday: TableData[];
-  friday: TableData[];
-  saturday: TableData[];
-  sunday: TableData[];
+  Monday: TableData[];
+  Tuesday: TableData[];
+  Wednesday: TableData[];
+  Thursday: TableData[];
+  Friday: TableData[];
+  Saturday: TableData[];
+  Sunday: TableData[];
 };
 
 export type UserCosts = Record<
@@ -155,13 +155,13 @@ export const addDailyUserEntriesTogether = (
   data: DataMappedToDay,
 ): ComputedDailyData => {
   return {
-    monday: addValuesTogether(data.monday),
-    tuesday: addValuesTogether(data.tuesday),
-    wednesday: addValuesTogether(data.wednesday),
-    thursday: addValuesTogether(data.thursday),
-    friday: addValuesTogether(data.friday),
-    saturday: addValuesTogether(data.saturday),
-    sunday: addValuesTogether(data.sunday),
+    Monday: addValuesTogether(data.monday),
+    Tuesday: addValuesTogether(data.tuesday),
+    Wednesday: addValuesTogether(data.wednesday),
+    Thursday: addValuesTogether(data.thursday),
+    Friday: addValuesTogether(data.friday),
+    Saturday: addValuesTogether(data.saturday),
+    Sunday: addValuesTogether(data.sunday),
   };
 };
 
@@ -249,15 +249,18 @@ export const mapTableData = (
 };
 
 export const subtractDaysFromWeek = (currentDay: Date) => {
-  const currentDayOfWeek = currentDay.getDay();
-  const daysToSubtract = (currentDayOfWeek + 6) % 7; // Calculate the number of days to subtract inside a 7 day modulo
+  const daysToSubtract = (currentDay.getDay() + 6) % 7;
 
-  const previousDays = new Date(currentDay);
-  previousDays.setDate(currentDay.getDate() - daysToSubtract);
+  const oneWeeksWorth = new Date(
+    currentDay.getTime() - daysToSubtract * 24 * 60 * 60 * 1000,
+  );
+  oneWeeksWorth.setHours(11, 59, 59, 0);
 
   const previousDaysAndWeek = new Date(
-    previousDays.getTime() - 7 * 24 * 60 * 60 * 1000,
+    oneWeeksWorth.getTime() - 7 * 24 * 60 * 60 * 1000,
   );
+
+  const previousDays = new Date(oneWeeksWorth.getTime() - 24 * 60 * 60 * 1000);
 
   return { previousDaysAndWeek, previousDays };
 };

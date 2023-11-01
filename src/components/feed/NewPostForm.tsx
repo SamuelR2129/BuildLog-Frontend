@@ -108,8 +108,16 @@ const Form = () => {
   const createTweet = api.tweet.create.useMutation({
     onSuccess: (newTweet) => {
       setContentValue("");
+      setHoursValue("");
+      setCostsValue("");
+      setBuildSiteValue("");
+      setImageFiles(null);
 
       if (session.status !== "authenticated") return;
+
+      if (newTweet.content === "") {
+        return;
+      }
 
       trpcUtils.tweet.infiniteFeed.setInfiniteData({}, (oldData) => {
         if (!oldData?.pages[0]) return;

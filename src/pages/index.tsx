@@ -35,18 +35,20 @@ const Home: NextPage = () => {
       </header>
       <NewPostForm />
       {session.status === "authenticated" && (
-        <select
-          value={selectedTab}
-          onChange={(e) => setSelectedTab(e.target.value)}
-          className="form-select block w-full rounded-md border border-gray-300 bg-white  px-4 py-2 font-thin text-gray-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-        >
-          <option value="" disabled selected>
-            Filter by address...
-          </option>
-          <option value="all">All addresses.</option>
-          <option value="34 Thompson Road">34 Thompson Road</option>
-          <option value="7 Rose St">7 Rose St</option>
-        </select>
+        <div className="px-3 py-3">
+          <select
+            value={selectedTab}
+            onChange={(e) => setSelectedTab(e.target.value)}
+            className="form-select block w-full rounded-md border border-gray-300 bg-white  px-4 py-2 font-thin text-gray-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+          >
+            <option value="" disabled selected>
+              Filter by address...
+            </option>
+            <option value="all">All addresses.</option>
+            <option value="34 Thompson Road">34 Thompson Road</option>
+            <option value="7 Rose St">7 Rose St</option>
+          </select>
+        </div>
       )}
       <RecentTweets selectedTab={selectedTab} />
     </>

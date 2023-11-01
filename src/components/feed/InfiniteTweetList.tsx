@@ -34,7 +34,7 @@ const TweetCard = ({
   imageNames,
 }: Tweet) => {
   return (
-    <li className="flex gap-4 border-b px-4 pt-7">
+    <li className="flex gap-4 border-b px-4 py-7">
       <div className="flex flex-grow flex-col">
         <div className="flex gap-1">
           <div className="font-bold">{user.name}</div>

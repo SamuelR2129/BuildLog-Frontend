@@ -4,7 +4,7 @@ import { Table } from "~/components/tables/Table";
 import { api } from "~/utils/api";
 
 const Tables = () => {
-  const data = api.tweet.tableData.useQuery(
+  const data = api.table.tableData.useQuery(
     {},
     { getNextPageParam: (lastPage) => lastPage.nextCursor },
   );
@@ -29,7 +29,10 @@ const Tables = () => {
     };
   });
 
-  console.log(weeklyTableProps);
+  const previousTablesDates = {
+    start: data.data.pastDate.previousDaysAndWeek.toDateString(),
+    end: data.data.pastDate.previousDays.toDateString(),
+  };
 
   if (!weeklyTableProps)
     return <h1>There has been an error getting the table data.</h1>;
@@ -40,13 +43,16 @@ const Tables = () => {
         <h1 className="mb-2 px-4 text-lg font-bold">EAC-ROWAN BUILD</h1>
       </header>
       <div className="min-width: 300px; max-width: 100%; margin: 0 auto; padding: 1rem; border: 1px solid #ccc; border-radius: 0.5rem;">
-        <h2>Current Table</h2>
+        <h2 className="bold px-2 py-2 pt-4 text-xl">Current Table</h2>
         <div className="overflow-x: auto; margin-top: 1rem;">
           <Table tableProps={weeklyTableProps[1]!} />
         </div>
       </div>
       <div className="min-width: 300px; max-width: 100%; margin: 0 auto; padding: 1rem; border: 1px solid #ccc; border-radius: 0.5rem;">
-        <h2>Previous Table</h2>
+        <h2 className="bold px-2 py-2 text-xl">
+          Previous Table - {previousTablesDates.start} to{" "}
+          {previousTablesDates.end}
+        </h2>
         <div className="overflow-x: auto; margin-top: 1rem;">
           <Table tableProps={weeklyTableProps[0]!} />
         </div>

@@ -127,9 +127,9 @@ const Form = () => {
 
         const newCacheTweet: NewPostData = {
           id: newTweet.id,
-          content: newTweet.content,
+          content: newTweet.content ?? "",
           createdAt: newTweet.createdAt,
-          buildSite: newTweet.buildSite,
+          buildSite: newTweet.buildSite ?? "",
           user: {
             id: session.data.user.id,
             name: session.data.user.name,
@@ -194,7 +194,7 @@ const Form = () => {
             <input
               value={hoursValue}
               onChange={(e) => setHoursValue(e.target.value)}
-              className="w-full resize-none overflow-hidden border border-gray-200 pl-2 text-lg font-thin"
+              className="w-full resize-none overflow-hidden rounded-lg border border-gray-400 pl-2 text-lg font-thin"
             />
           </div>
           <div className="px-1 py-1">
@@ -202,7 +202,7 @@ const Form = () => {
             <input
               value={costsValue}
               onChange={(e) => setCostsValue(e.target.value)}
-              className="w-full resize-none overflow-hidden border border-gray-200 pl-2 text-lg font-thin"
+              className="w-full resize-none overflow-hidden rounded-lg border border-gray-400 pl-2 text-lg font-thin"
             />
           </div>
         </div>
@@ -211,11 +211,11 @@ const Form = () => {
           style={{ height: 0 }}
           value={contentValue}
           onChange={(e) => setContentValue(e.target.value)}
-          className="w-full flex-grow resize-none  overflow-hidden border border-gray-200 p-4 text-lg font-thin outline-none  focus:border-2 focus:border-blue-500"
+          className="w-full flex-grow resize-none overflow-hidden  rounded-lg border border-gray-400 p-4 text-lg text-sm font-thin outline-none  focus:border-2 focus:border-blue-500"
           placeholder="What's happening?"
         />
         <select
-          className="w-full resize-none overflow-hidden border border-gray-200 bg-white p-2 pl-2 font-thin text-gray-400 outline-none"
+          className="w-full resize-none overflow-hidden rounded-lg border border-gray-400 bg-white p-2 pl-2 font-thin text-gray-700 outline-none"
           value={buildSiteValue}
           onChange={(e) => setBuildSiteValue(e.target.value)}
         >

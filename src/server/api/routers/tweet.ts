@@ -60,11 +60,14 @@ export const tweetRouter = createTRPCRouter({
 
       return {
         tweets: data.map((tweet) => {
+          if (!tweet.content || !tweet.buildSite)
+            console.error("A feed post is missing its content and buildsite");
+
           const newCacheTweet: NewPostData = {
             id: tweet.id,
-            content: tweet.content,
+            content: tweet.content ?? "",
             createdAt: tweet.createdAt,
-            buildSite: tweet.buildSite,
+            buildSite: tweet.buildSite ?? "",
             user: { ...tweet.user },
           };
 
@@ -79,10 +82,10 @@ export const tweetRouter = createTRPCRouter({
   create: protectedProcedure
     .input(
       z.object({
-        content: z.string(),
-        costs: z.string(),
-        hours: z.string(),
-        buildSite: z.string(),
+        content: z.string().optional(),
+        costs: z.string().optional(),
+        hours: z.string().optional(),
+        buildSite: z.string().optional(),
         imageNames: z.array(z.string()).optional(),
       }),
     )

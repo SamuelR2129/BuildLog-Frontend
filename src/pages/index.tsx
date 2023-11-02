@@ -1,6 +1,7 @@
 import { type NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
+import { Header } from "~/components/Header";
 import {
   InfiniteTweetList,
   type Tweet,
@@ -30,12 +31,10 @@ const Home: NextPage = () => {
   const session = useSession();
   return (
     <>
-      <header className="sticky top-0 z-10 border-b bg-white pt-2">
-        <h1 className="mb-2 px-4 text-lg font-bold">EAC-ROWAN BUILD</h1>
-      </header>
+      <Header />
       <NewPostForm />
       {session.status === "authenticated" && (
-        <div className="px-3 py-3">
+        <div className="px-3 py-3 md:px-8 md:py-6">
           <select
             value={selectedTab}
             onChange={(e) => setSelectedTab(e.target.value)}

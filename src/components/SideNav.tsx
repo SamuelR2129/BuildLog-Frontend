@@ -1,7 +1,13 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { IconHoverEffect } from "./IconHoverEffect";
-import { VscHome, VscSignIn, VscSignOut, VscTable } from "react-icons/vsc";
+import {
+  VscHome,
+  VscSignIn,
+  VscSignOut,
+  VscTable,
+  VscOrganization,
+} from "react-icons/vsc";
 
 export const SideNav = () => {
   const session = useSession();
@@ -28,6 +34,18 @@ export const SideNav = () => {
                 <VscTable className="h-8 w-8 fill-blue-500" />
                 <span className="hidden self-center text-lg text-blue-500 md:flex">
                   Tables
+                </span>
+              </span>
+            </IconHoverEffect>
+          </Link>
+        </li>
+        <li>
+          <Link href={"/subbies"}>
+            <IconHoverEffect>
+              <span className="item-center flex gap-4">
+                <VscOrganization className="h-8 w-8 fill-blue-500" />
+                <span className="hidden self-center text-lg text-blue-500 md:flex">
+                  Subbies
                 </span>
               </span>
             </IconHoverEffect>

@@ -1,10 +1,17 @@
 import React from "react";
+import { Header } from "~/components/Header";
 import { LoadingSpinner } from "~/components/LoadingSpinner";
 import { Table } from "~/components/tables/Table";
 import { api } from "~/utils/api";
+import { mapTableDataForThePage } from "./utils/clientTableUtils";
 
 const Tables = () => {
   const data = api.table.tableData.useQuery(
+    {},
+    { getNextPageParam: (lastPage) => lastPage.nextCursor },
+  );
+
+  const subbieData = api.table.subbieData.useQuery(
     {},
     { getNextPageParam: (lastPage) => lastPage.nextCursor },
   );
@@ -16,45 +23,58 @@ const Tables = () => {
     return <LoadingSpinner />;
   }
 
-  const weeklyTableProps = data.data?.weeklyMappedData.map((tableData) => {
-    const days = Object.keys(tableData.weeklyData);
-    const names = Object.keys(tableData.overallCosts);
+  if (subbieData.error)
+    return <h1>There has been an error getting the table data.</h1>;
 
-    return {
-      weeklyData: tableData.weeklyData,
-      totalHours: tableData.overallHours,
-      totalCosts: tableData.overallCosts,
-      days,
-      names,
-    };
-  });
+  if (subbieData.isLoading || !subbieData) {
+    return <LoadingSpinner />;
+  }
 
-  const previousTablesDates = {
-    start: data.data.pastDate.previousDaysAndWeek.toDateString(),
-    end: data.data.pastDate.previousDays.toDateString(),
-  };
+  const weeklyTableProps = mapTableDataForThePage(
+    data.data.weeklyMappedData,
+    data.data.pastDate,
+  );
 
-  if (!weeklyTableProps)
+  const weeklySubbieTableProps = mapTableDataForThePage(
+    subbieData.data.weeklyMappedData,
+    subbieData.data.pastDate,
+  );
+
+  if (!weeklyTableProps || !weeklySubbieTableProps)
     return <h1>There has been an error getting the table data.</h1>;
 
   return (
     <>
-      <header className="sticky top-0 z-10 border-b bg-white pt-2">
-        <h1 className="mb-2 px-4 text-lg font-bold">EAC-ROWAN BUILD</h1>
-      </header>
+      <Header />
       <div className="min-width: 300px; max-width: 100%; margin: 0 auto; padding: 1rem; border: 1px solid #ccc; border-radius: 0.5rem;">
         <h2 className="bold px-2 py-2 pt-4 text-xl">Current Table</h2>
         <div className="overflow-x: auto; margin-top: 1rem;">
-          <Table tableProps={weeklyTableProps[1]!} />
+          <Table tableProps={weeklyTableProps.table[1]!} />
         </div>
       </div>
       <div className="min-width: 300px; max-width: 100%; margin: 0 auto; padding: 1rem; border: 1px solid #ccc; border-radius: 0.5rem;">
         <h2 className="bold px-2 py-2 text-xl">
-          Previous Table - {previousTablesDates.start} to{" "}
-          {previousTablesDates.end}
+          Previous Table - {weeklyTableProps.previousTablesDates.start} to{" "}
+          {weeklyTableProps.previousTablesDates.end}
         </h2>
         <div className="overflow-x: auto; margin-top: 1rem;">
-          <Table tableProps={weeklyTableProps[0]!} />
+          <Table tableProps={weeklyTableProps.table[0]!} />
+        </div>
+      </div>
+      <div className="min-width: 300px; max-width: 100%; margin: 0 auto; padding: 1rem; border: 1px solid #ccc; border-radius: 0.5rem;">
+        <h2 className="bold px-2 py-2 pt-4 text-xl">Subbies Current Table</h2>
+        <div className="overflow-x: auto; margin-top: 1rem;">
+          <Table tableProps={weeklySubbieTableProps.table[1]!} />
+        </div>
+      </div>
+      <div className="min-width: 300px; max-width: 100%; margin: 0 auto; padding: 1rem; border: 1px solid #ccc; border-radius: 0.5rem;">
+        <h2 className="bold px-2 py-2 text-xl">
+          Subbies Previous Table -{" "}
+          {weeklySubbieTableProps.previousTablesDates.start} to
+          {weeklySubbieTableProps.previousTablesDates.end}
+        </h2>
+        <div className="overflow-x: auto; margin-top: 1rem;">
+          <Table tableProps={weeklySubbieTableProps.table[0]!} />
         </div>
       </div>
     </>

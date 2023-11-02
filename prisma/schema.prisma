@@ -10,14 +10,25 @@ datasource db {
   relationMode = "prisma"
 }
 
+model SubbieEntry {
+    id        String   @id @default(uuid())
+    createdAt DateTime @default(now())
+    hours     String   
+    costs     String   
+    name      String   
+    userId    String
+    @@index([id])
+    @@unique([createdAt, id])
+}
+
 model Tweet {
     id        String   @id @default(uuid())
     userId    String
-    content   String
+    content   String?
     createdAt DateTime @default(now())
-    hours     String   @default("")
-    costs     String   @default("")
-    buildSite String   @default("")
+    hours     String?   
+    costs     String?   
+    buildSite String?  
     imageNames String?
 
     user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)

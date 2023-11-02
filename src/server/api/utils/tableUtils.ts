@@ -1,8 +1,8 @@
 export type RawData = {
   id: string;
-  costs: string;
+  costs: string | null;
   createdAt: Date;
-  hours: string;
+  hours: string | null;
   user: { name: string; id: string };
 };
 
@@ -213,18 +213,27 @@ export const addUpHowManyHoursWorked = (data: TableData[]): UserHours => {
   return finalSums;
 };
 
-export const flattenObject = (posts: RawData[]): TableData[] => {
-  return posts.map((post) => ({
-    id: post.id,
-    costs: post.costs,
-    createdAt: post.createdAt,
-    hours: post.hours,
-    name: post.user.name,
-  }));
+export const flattenObject = (posts: RawData[] | TableData[]): TableData[] => {
+  return posts.map((post) => {
+    if (!post.hours || !post.costs)
+      throw new Error("Costs or Hours are missing from table data");
+
+    if ("user" in post) {
+      return {
+        id: post.id,
+        costs: post.costs,
+        createdAt: post.createdAt,
+        hours: post.hours,
+        name: post.user.name,
+      };
+    }
+
+    return post;
+  });
 };
 
 export const mapTableData = (
-  postData: RawData[],
+  postData: RawData[] | TableData[],
   previousDays: Date,
 ): WeeklyMappedData[] => {
   const flattenedPostData = flattenObject(postData);

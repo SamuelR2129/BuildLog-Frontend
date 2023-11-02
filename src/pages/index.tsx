@@ -34,11 +34,11 @@ const Home: NextPage = () => {
       <Header />
       <NewPostForm />
       {session.status === "authenticated" && (
-        <div className="px-3 py-3 md:px-8 md:py-6">
+        <div className="px-3 py-3 pt-9 md:px-8 md:py-6">
           <select
             value={selectedTab}
             onChange={(e) => setSelectedTab(e.target.value)}
-            className="form-select block w-full rounded-md border border-gray-300 bg-white  px-4 py-2 font-thin text-gray-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+            className="form-select block w-full rounded-md border border-gray-400 bg-white px-4  py-2 font-thin text-gray-400 shadow focus:border-blue-500 focus:outline-none focus:ring-blue-500"
           >
             <option value="" disabled selected>
               Filter by address...

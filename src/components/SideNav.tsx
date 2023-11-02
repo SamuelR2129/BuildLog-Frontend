@@ -7,6 +7,7 @@ import {
   VscSignOut,
   VscTable,
   VscOrganization,
+  VscListUnordered,
 } from "react-icons/vsc";
 
 export const SideNav = () => {
@@ -46,6 +47,18 @@ export const SideNav = () => {
                 <VscOrganization className="h-8 w-8 fill-blue-500" />
                 <span className="hidden self-center text-lg text-blue-500 md:flex">
                   Subbies
+                </span>
+              </span>
+            </IconHoverEffect>
+          </Link>
+        </li>
+        <li>
+          <Link href={"/manage"}>
+            <IconHoverEffect>
+              <span className="item-center flex gap-4">
+                <VscListUnordered className="h-8 w-8 fill-blue-500" />
+                <span className="hidden self-center text-lg text-blue-500 md:flex">
+                  Manage
                 </span>
               </span>
             </IconHoverEffect>

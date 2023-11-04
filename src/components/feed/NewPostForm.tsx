@@ -11,6 +11,7 @@ import { useSession } from "next-auth/react";
 import { api } from "~/utils/api";
 import { VscDeviceCamera } from "react-icons/vsc";
 import { IconHoverEffect } from "../IconHoverEffect";
+import { imageS3Handler } from "./imageS3Handler";
 
 type PostData = {
   content: string;
@@ -39,20 +40,6 @@ const updateTextAreaSize = (textArea?: HTMLTextAreaElement) => {
   textArea.style.height = `${textArea.scrollHeight}px`;
 };
 
-const uploadImagesToS3 = async (url: string, image: File) => {
-  const response = await fetch(url, {
-    method: "PUT",
-    headers: {
-      "Content-Type": image.type,
-    },
-    body: image,
-  });
-
-  if (response.status !== 200) {
-    console.error("Failed to upload image with presigned url");
-  }
-};
-
 export const NewPostForm = () => {
   const session = useSession();
   if (session.status !== "authenticated") return null;
@@ -79,31 +66,6 @@ const Form = () => {
     updateTextAreaSize(textAreaRef.current);
   }, [contentValue]);
   //For the text area
-
-  const { mutateAsync: fetchPresignedUrls } =
-    api.images.getImageUploadUrls.useMutation();
-
-  const getImageNamesFromFormData = async (
-    images: FileList,
-  ): Promise<string[]> => {
-    const imageNamesWithNoSpaces = [...images].map((image) => {
-      return image.name.replace(/ /g, "_");
-    });
-
-    const preSignedUrls = await fetchPresignedUrls({
-      imageNames: imageNamesWithNoSpaces,
-    }).catch((err) => {
-      alert(`Error uploading the image`);
-      console.error(err);
-    });
-
-    preSignedUrls &&
-      preSignedUrls.map(async (url, index) => {
-        await uploadImagesToS3(url, images[index]!);
-      });
-
-    return imageNamesWithNoSpaces;
-  };
 
   const createTweet = api.tweet.create.useMutation({
     onSuccess: (newTweet) => {
@@ -164,7 +126,7 @@ const Form = () => {
     };
 
     if (imageFiles && imageFiles.length > 0)
-      postData.imageNames = await getImageNamesFromFormData(imageFiles);
+      postData.imageNames = await imageS3Handler(imageFiles);
 
     createTweet.mutate(postData);
   };

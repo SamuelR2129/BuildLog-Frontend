@@ -10,6 +10,16 @@ datasource db {
   relationMode = "prisma"
 }
 
+model BuildSite {
+    id        String   @id @default(uuid())
+    userId    String
+    createdAt DateTime @default(now())
+    buildSite String 
+    updatedAt         DateTime @updatedAt  
+    @@index([id])
+    @@unique([createdAt, id])
+}
+
 model SubbieEntry {
     id        String   @id @default(uuid())
     createdAt DateTime @default(now())

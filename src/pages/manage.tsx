@@ -15,15 +15,6 @@ const Manage = () => {
     setOpen(index);
   };
 
-  const accordionDataOne = {
-    title: "iasjof",
-    desc: "qwkrnfqeo",
-  };
-  const accordionDataTwo = {
-    title: "JUSDF",
-    desc: "CRENFER",
-  };
-
   return (
     <>
       <Header />
@@ -38,19 +29,16 @@ const Manage = () => {
           <BuildSiteItem
             open={open === 0}
             title={"Build Site"}
-            desc={accordionDataOne.desc}
             toggle={() => toggle(0)}
           />
           <SubbieItem
             open={open === 1}
             title={"Subbies"}
-            desc={accordionDataOne.desc}
             toggle={() => toggle(1)}
           />
           <EmployeeItem
             open={open === 2}
             title={"Employees"}
-            desc={accordionDataOne.desc}
             toggle={() => toggle(2)}
           />
         </div>

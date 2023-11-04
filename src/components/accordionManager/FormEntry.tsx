@@ -14,18 +14,21 @@ const style = {
 type EntryProps = {
   id: string;
   value: string;
-  updateFormValue: (id: string, value: string) => void;
-  deleteFormValue: (id: string) => void;
+  updateFormEntry: (id: string, value: string) => void;
+  deleteFormEntry: (id: string) => void;
 };
 
 const FormEntry = ({
   id,
   value,
-  updateFormValue,
-  deleteFormValue,
+  updateFormEntry,
+  deleteFormEntry,
 }: EntryProps) => {
   const [editedValue, setEditedValue] = useState(value);
   const [isEditing, setIsEditing] = useState(false);
+
+  /* When you click the edit button, it will swap out the text for 
+     a editable input, then hitting the tick will trigger update flow */
 
   return (
     <li className={style.li}>
@@ -37,7 +40,7 @@ const FormEntry = ({
             </IconHoverEffect>
           </button>
         ) : (
-          <button onClick={() => updateFormValue(id, editedValue)}>
+          <button onClick={() => updateFormEntry(id, editedValue)}>
             <IconHoverEffect green>
               <VscCheck size={20} className="text-green-700" />
             </IconHoverEffect>
@@ -56,7 +59,12 @@ const FormEntry = ({
         )}
       </div>
 
-      <button onClick={() => deleteFormValue(id)}>
+      <button
+        onClick={() => {
+          if (!confirm("Are you sure you want to delete?")) return;
+          deleteFormEntry(id);
+        }}
+      >
         <IconHoverEffect red>
           <VscTrash size={20} className="fill-red-500" />
         </IconHoverEffect>

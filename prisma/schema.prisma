@@ -15,7 +15,17 @@ model BuildSite {
     userId    String
     createdAt DateTime @default(now())
     buildSite String 
-    updatedAt         DateTime @updatedAt  
+    updatedAt         DateTime? @updatedAt  
+    @@index([id])
+    @@unique([createdAt, id])
+}
+
+model Subbie {
+    id        String   @id @default(uuid())
+    userId    String
+    createdAt DateTime @default(now())
+    subbieName String 
+    updatedAt         DateTime? @updatedAt  
     @@index([id])
     @@unique([createdAt, id])
 }

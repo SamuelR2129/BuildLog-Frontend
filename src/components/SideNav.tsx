@@ -81,7 +81,7 @@ export const SideNav = () => {
         {!user && (
           <li>
             <button onClick={() => void signIn()}>
-              <IconHoverEffect>
+              <IconHoverEffect green>
                 <span className="item-center flex gap-4">
                   <VscSignIn className="h-6 w-6 fill-green-700" />
                   <span className="mt-[2px] hidden self-center  text-green-700 md:flex">

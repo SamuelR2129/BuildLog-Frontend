@@ -13,7 +13,7 @@ export const AccordionHeader = ({
 }: AccordionHeaderProps) => {
   return (
     <div
-      className="top-px flex cursor-pointer items-center justify-between rounded-md bg-gray-100 px-[50px] py-[25px]"
+      className="top-px mt-3 flex cursor-pointer items-center justify-between rounded-md bg-gray-100 px-[50px] py-[25px]"
       onClick={toggle}
     >
       <p className="text-[22px] font-semibold">{title}</p>

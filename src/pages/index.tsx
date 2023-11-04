@@ -2,33 +2,16 @@ import { type NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { Header } from "~/components/Header";
-import {
-  InfiniteTweetList,
-  type Tweet,
-} from "~/components/feed/InfiniteTweetList";
+import { InfiniteTweetList } from "~/components/feed/InfiniteTweetList";
 import { NewPostForm } from "~/components/feed/NewPostForm";
 import { api } from "~/utils/api";
-
-const RecentTweets = ({ selectedTab }: { selectedTab?: string }) => {
-  const tweets = api.tweet.infiniteFeed.useInfiniteQuery(
-    { siteFilter: selectedTab === "all" ? undefined : selectedTab },
-    { getNextPageParam: (lastPage) => lastPage.nextCursor },
-  );
-
-  return (
-    <InfiniteTweetList
-      tweets={tweets.data?.pages.flatMap((page): Tweet[] => page.tweets)}
-      isError={tweets.isError}
-      isLoading={tweets.isLoading}
-      hasMore={tweets.hasNextPage}
-      fetchNewTweets={tweets.fetchNextPage}
-    />
-  );
-};
 
 const Home: NextPage = () => {
   const [selectedTab, setSelectedTab] = useState<string | undefined>();
   const session = useSession();
+  const { data, isLoading, isError } = api.manageBuildSites.getSites.useQuery(
+    {},
+  );
   return (
     <>
       <Header />
@@ -40,7 +23,7 @@ const Home: NextPage = () => {
             onChange={(e) => setSelectedTab(e.target.value)}
             className="form-select block w-full rounded-md border border-gray-400 bg-white px-4  py-2 font-thin text-gray-400 shadow focus:border-blue-500 focus:outline-none focus:ring-blue-500"
           >
-            <option value="" disabled selected>
+            <option disabled selected>
               Filter by address...
             </option>
             <option value="all">All addresses.</option>
@@ -49,7 +32,7 @@ const Home: NextPage = () => {
           </select>
         </div>
       )}
-      <RecentTweets selectedTab={selectedTab} />
+      <InfiniteTweetList selectedTab={selectedTab} />
     </>
   );
 };

@@ -95,4 +95,19 @@ export const buildSiteRouter = createTRPCRouter({
         },
       });
     }),
+
+  createSite: protectedProcedure
+    .input(
+      z.object({
+        content: z.string(),
+      }),
+    )
+    .mutation(async ({ input: { content }, ctx }) => {
+      return await ctx.db.buildSite.create({
+        data: {
+          buildSite: content,
+          userId: ctx.session.user.id,
+        },
+      });
+    }),
 });

@@ -1,5 +1,5 @@
 import { type WeeklyMappedData } from "~/server/api/utils/tableUtils";
-import { mapTableDataForThePage } from "../pages/utils/clientTableUtils";
+import { mapTableDataForThePage } from "../pageUtils/clientTableUtils";
 
 describe("mapTableDataForThePage", () => {
   const weeklyMappedData = [

@@ -3,7 +3,7 @@ import { Header } from "~/components/Header";
 import { LoadingSpinner } from "~/components/LoadingSpinner";
 import { Table } from "~/components/tables/Table";
 import { api } from "~/utils/api";
-import { mapTableDataForThePage } from "./utils/clientTableUtils";
+import { mapTableDataForThePage } from "../pageUtils/clientTableUtils";
 
 const Tables = () => {
   const data = api.table.tableData.useQuery(

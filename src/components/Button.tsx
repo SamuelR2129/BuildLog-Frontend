@@ -19,7 +19,7 @@ export const Button = ({
     : "bg-blue-500 hover:bg-blue-400 focus-visible:bg-blue-400";
   return (
     <button
-      className={`rounded-full px-2 py-1 text-white transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-50 md:px-4 md:py-2 md:font-bold  ${colorClasses} ${className}`}
+      className={`rounded-full px-3 py-2 text-sm text-white transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-50 md:px-4 md:py-2 md:font-bold  ${colorClasses} ${className}`}
       {...props}
     ></button>
   );

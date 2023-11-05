@@ -195,17 +195,19 @@ const Form = ({ buildSites }: FormProps) => {
     >
       <div className="flex flex-col gap-4">
         <div className="flex gap-2">
-          <div className="px-1 py-1">
+          <div>
             <span>Hours</span>
             <input
               value={hoursValue}
+              placeholder="0"
               onChange={(e) => setHoursValue(e.target.value)}
               className="w-full resize-none overflow-hidden rounded-lg border border-gray-400 pl-2 text-lg font-thin"
             />
           </div>
-          <div className="px-1 py-1">
+          <div>
             <span>Costs</span>
             <input
+              placeholder="0.00"
               value={costsValue}
               onChange={(e) => setCostsValue(e.target.value)}
               className="w-full resize-none overflow-hidden rounded-lg border border-gray-400 pl-2 text-lg font-thin"
@@ -221,7 +223,7 @@ const Form = ({ buildSites }: FormProps) => {
           placeholder="What's happening?"
         />
         <select
-          className="w-full resize-none overflow-hidden rounded-lg border border-gray-400 bg-white p-2 pl-2 font-thin text-gray-700 outline-none"
+          className="w-full resize-none overflow-hidden rounded-lg border border-gray-400 bg-white p-2 pl-2 text-sm font-thin text-gray-700 outline-none"
           value={buildSiteValue}
           onChange={(e) => setBuildSiteValue(e.target.value)}
         >

@@ -4,7 +4,10 @@ const config = {
   parserOptions: {
     project: true,
   },
-  plugins: ["@typescript-eslint"],
+  env: {
+    "jest/globals": true,
+  },
+  plugins: ["@typescript-eslint", "jest"],
   extends: [
     "next/core-web-vitals",
     "plugin:@typescript-eslint/recommended-type-checked",

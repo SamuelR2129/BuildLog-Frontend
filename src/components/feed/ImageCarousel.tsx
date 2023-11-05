@@ -15,7 +15,7 @@ type PropType = {
 export const EmblaImageCarousel: React.FC<PropType> = (props) => {
   const { imageNames, options } = props;
   const [emblaRef, emblaApi] = useEmblaCarousel(options);
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [, setSelectedIndex] = useState(0);
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
 
   const scrollTo = useCallback(

@@ -11,7 +11,7 @@ import { useSession } from "next-auth/react";
 import { api } from "~/utils/api";
 import { VscDeviceCamera } from "react-icons/vsc";
 import { IconHoverEffect } from "../IconHoverEffect";
-import { imageS3Handler } from "./imageS3Handler";
+import { uploadImagesToS3 } from "./imageS3Handler";
 
 type PostData = {
   content: string;
@@ -33,6 +33,24 @@ type NewPostData = {
   };
 };
 
+type NewPostFormProps = {
+  buildSites?: {
+    id: string;
+    buildSite: string;
+    createdAt: Date;
+  }[];
+  siteIsLoading: boolean;
+  siteIsError: boolean;
+};
+
+type FormProps = {
+  buildSites: {
+    id: string;
+    buildSite: string;
+    createdAt: Date;
+  }[];
+};
+
 const updateTextAreaSize = (textArea?: HTMLTextAreaElement) => {
   if (!textArea) return;
 
@@ -40,13 +58,19 @@ const updateTextAreaSize = (textArea?: HTMLTextAreaElement) => {
   textArea.style.height = `${textArea.scrollHeight}px`;
 };
 
-export const NewPostForm = () => {
+export const NewPostForm = ({
+  buildSites,
+  siteIsLoading,
+  siteIsError,
+}: NewPostFormProps) => {
   const session = useSession();
   if (session.status !== "authenticated") return null;
-  return <Form />;
+  if (siteIsLoading) return null;
+  if (siteIsError || !buildSites) return null;
+  return <Form buildSites={buildSites} />;
 };
 
-const Form = () => {
+const Form = ({ buildSites }: FormProps) => {
   const [contentValue, setContentValue] = useState<string>("");
   const [hoursValue, setHoursValue] = useState<string>("");
   const [costsValue, setCostsValue] = useState<string>("");
@@ -115,6 +139,9 @@ const Form = () => {
     },
   });
 
+  const { mutateAsync: mutateFetchPresignedUrls } =
+    api.images.getImageUploadUrls.useMutation();
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
@@ -125,8 +152,25 @@ const Form = () => {
       buildSite: buildSiteValue,
     };
 
-    if (imageFiles && imageFiles.length > 0)
-      postData.imageNames = await imageS3Handler(imageFiles);
+    if (imageFiles && imageFiles.length > 0) {
+      const imageNamesWithNoSpaces = [...imageFiles].map((image) => {
+        return image.name.replace(/ /g, "_");
+      });
+
+      const preSignedUrls = await mutateFetchPresignedUrls({
+        imageNames: imageNamesWithNoSpaces,
+      }).catch((err) => {
+        console.error(err);
+        alert(`Error uploading the image`);
+      });
+
+      preSignedUrls &&
+        preSignedUrls.map(async (url, index) => {
+          await uploadImagesToS3(url, imageFiles[index]!);
+        });
+
+      postData.imageNames = imageNamesWithNoSpaces;
+    }
 
     createTweet.mutate(postData);
   };
@@ -181,9 +225,14 @@ const Form = () => {
           value={buildSiteValue}
           onChange={(e) => setBuildSiteValue(e.target.value)}
         >
-          <option value="">Choose a build site.</option>
-          <option value="34 Thompson Road">34 Thompson Road</option>
-          <option value="7 Rose St">7 Rose St</option>
+          <option>Choose a build site.</option>
+          {buildSites.map((site) => {
+            return (
+              <option key={site.id} value={site.buildSite}>
+                {site.buildSite}
+              </option>
+            );
+          })}
         </select>
       </div>
       <div className="flex items-center justify-between">

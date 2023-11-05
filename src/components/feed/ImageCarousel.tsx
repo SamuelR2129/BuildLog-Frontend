@@ -52,8 +52,8 @@ export const EmblaImageCarousel: React.FC<PropType> = (props) => {
                 src={`https://dnhi95iahz2rb.cloudfront.net/${name}`}
                 width={500}
                 height={500}
-                alt="Picture of the author"
-                className="embla__slide"
+                alt="Image is missing, please refresh..."
+                className="embla__slide border-2"
               />
             ))}
           </div>

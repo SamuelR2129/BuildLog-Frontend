@@ -14,10 +14,10 @@ import { IconHoverEffect } from "../IconHoverEffect";
 import { uploadImagesToS3 } from "./imageS3Handler";
 
 type PostData = {
-  content: string;
-  hours: string;
-  costs: string;
-  buildSite: string;
+  content?: string;
+  hours?: string;
+  costs?: string;
+  buildSite?: string;
   imageNames?: string[];
 };
 
@@ -144,6 +144,11 @@ const Form = ({ buildSites }: FormProps) => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+
+    if (contentValue.length !== 0 && buildSiteValue.length === 0) {
+      alert("Select a build site for your report.");
+      return;
+    }
 
     const postData: PostData = {
       content: contentValue,

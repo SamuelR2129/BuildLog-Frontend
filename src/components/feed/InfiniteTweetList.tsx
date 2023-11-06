@@ -2,6 +2,8 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { LoadingSpinner } from "../LoadingSpinner";
 import { EmblaImageCarousel } from "./ImageCarousel";
 import { api } from "~/utils/api";
+import { VscTrash } from "react-icons/vsc";
+import { type SyntheticEvent } from "react";
 
 export type Tweet = {
   id: string;
@@ -21,23 +23,51 @@ const dateTimeFormatter = new Intl.DateTimeFormat(undefined, {
 
 const TweetCard = ({
   user,
+  id,
   content,
   createdAt,
   buildSite,
   imageNames,
 }: Tweet) => {
+  const deletePost = api.tweet.deletePost.useMutation({
+    onSuccess: () => {
+      alert("post was deleted");
+    },
+    onError: (e) => {
+      console.error(e);
+      alert("There was a problem deleting post");
+    },
+  });
+
+  const deletePostHandler = (e: SyntheticEvent) => {
+    e.preventDefault();
+    deletePost.mutate({ id, imageNames });
+  };
+
   return (
     <li className="flex gap-4 border-b px-4 py-7">
       <div className="flex flex-grow flex-col">
-        <div className="flex gap-1">
-          <div className="font-bold">{user.name}</div>
-          <span className="text-gray-500">-</span>
-          <span className="text-gray-500">
-            {dateTimeFormatter.format(createdAt)}
-          </span>
+        <div className="flex">
+          <div className="flex flex-grow flex-col">
+            <div className="flex gap-1">
+              <span className="font-bold">{user.name}</span>
+              <span className="text-gray-500">-</span>
+              <span className="text-gray-500">
+                {dateTimeFormatter.format(createdAt)}
+              </span>
+            </div>
+            <span className="text-gray-500">{buildSite}</span>
+
+            <p className="whitespace-pre-wap">{content}</p>
+          </div>
+          <div className="h-fit">
+            <VscTrash
+              size={20}
+              className="fill-red-500 hover:fill-red-400 focus:fill-red-400"
+              onClick={(e: SyntheticEvent) => deletePostHandler(e)}
+            />
+          </div>
         </div>
-        <span className="text-gray-500">{buildSite}</span>
-        <p className="whitespace-pre-wap">{content}</p>
         {imageNames && (
           <div className="py-4">
             <EmblaImageCarousel imageNames={imageNames} />

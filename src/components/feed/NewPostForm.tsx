@@ -9,7 +9,7 @@ import React, {
 import { Button } from "../Button";
 import { useSession } from "next-auth/react";
 import { api } from "~/utils/api";
-import { VscDeviceCamera } from "react-icons/vsc";
+import { CiImageOn } from "react-icons/ci";
 import { IconHoverEffect } from "../IconHoverEffect";
 import { uploadImagesToS3 } from "./imageS3Handler";
 
@@ -246,7 +246,7 @@ const Form = ({ buildSites }: FormProps) => {
         <div className="flex items-center justify-between">
           <IconHoverEffect>
             <div className="container flex cursor-pointer items-center justify-center">
-              <VscDeviceCamera
+              <CiImageOn
                 className="h-8 w-8 fill-blue-500"
                 onClick={handleImageClick}
               />

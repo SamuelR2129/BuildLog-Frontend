@@ -4,6 +4,7 @@ import { EmblaImageCarousel } from "./ImageCarousel";
 import { api } from "~/utils/api";
 import { VscTrash } from "react-icons/vsc";
 import { useState, type SyntheticEvent } from "react";
+import { useSession } from "next-auth/react";
 
 export type Tweet = {
   id: string;
@@ -30,6 +31,8 @@ const TweetCard = ({
   imageNames,
 }: Tweet) => {
   const [isLoading, setIsLoading] = useState(false);
+  const session = useSession();
+  const sessionUser = session.data?.user.id;
 
   const deletePost = api.tweet.deletePost.useMutation({
     onSuccess: () => {
@@ -68,13 +71,15 @@ const TweetCard = ({
 
             <p className="whitespace-pre-wap">{content}</p>
           </div>
-          <div className="h-fit">
-            <VscTrash
-              size={20}
-              className="fill-red-500 hover:fill-red-400 focus:fill-red-400"
-              onClick={(e: SyntheticEvent) => deletePostHandler(e)}
-            />
-          </div>
+          {user.id === sessionUser ? (
+            <div className="h-fit">
+              <VscTrash
+                size={20}
+                className="fill-red-500 hover:fill-red-400 focus:fill-red-400"
+                onClick={(e: SyntheticEvent) => deletePostHandler(e)}
+              />
+            </div>
+          ) : null}
         </div>
         {imageNames && (
           <div className="py-4">

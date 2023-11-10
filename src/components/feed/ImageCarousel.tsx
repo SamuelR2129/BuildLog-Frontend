@@ -49,7 +49,7 @@ export const EmblaImageCarousel: React.FC<PropType> = (props) => {
             {imageNames?.map((name, index) => (
               <Image
                 key={index}
-                src={`https://dnhi95iahz2rb.cloudfront.net/${name}`}
+                src={name}
                 width={500}
                 height={500}
                 alt="Image is missing, please refresh..."

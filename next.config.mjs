@@ -21,7 +21,7 @@ const config = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "dnhi95iahz2rb.cloudfront.net",
+        hostname: "**.cloudfront.net",
         pathname: "/**",
       },
     ],

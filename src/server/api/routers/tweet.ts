@@ -91,8 +91,12 @@ export const tweetRouter = createTRPCRouter({
             user: { ...tweet.user },
           };
 
-          if (tweet?.imageNames)
-            newCacheTweet.imageNames = tweet.imageNames.split(",");
+          if (tweet?.imageNames) {
+            const imageUrls = tweet.imageNames.split(",").map((name) => {
+              return `${process.env.CLOUDFRONT_URL}${name}`;
+            });
+            newCacheTweet.imageNames = imageUrls;
+          }
           return newCacheTweet;
         }),
         nextCursor,

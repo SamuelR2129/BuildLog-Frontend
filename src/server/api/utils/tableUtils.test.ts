@@ -1,3 +1,4 @@
+import { utcToZonedTime } from "date-fns-tz";
 import {
   type DataMappedToDay,
   type TableData,
@@ -8,39 +9,51 @@ import {
   sortDataByDay,
   sortDataByWeek,
   subtractDaysFromWeek,
+  getAustralianDateMidnight,
+  getAustraliaDate,
 } from "./tableUtils";
 
 describe("subtractDaysFromWeek", () => {
   //Mon: 1, Tues: 2, Wed: 3, Thur: 4, Fri: 5, Sat: 6, Sun: 0
 
   it("returns the correct date when currentDay is a Sunday", () => {
-    const currentDay = new Date("2023-07-02"); // Sunday
+    const currentDay = getAustralianDateMidnight(new Date("2023-07-02")); // Sunday
     const result = subtractDaysFromWeek(currentDay);
-    expect(result.previousDays).toEqual(new Date("2023-06-26")); // Previous Monday
+    expect(result.previousMonday).toEqual(
+      getAustralianDateMidnight(new Date("2023-06-26")),
+    ); // Previous Monday
   });
 
   it("returns the correct date when currentDay is a Monday", () => {
-    const currentDay = new Date("2023-07-03"); // Monday
+    const currentDay = getAustralianDateMidnight(new Date("2023-07-03")); // Monday
     const result = subtractDaysFromWeek(currentDay);
-    expect(result.previousDays).toEqual(new Date("2023-07-03")); // Returns Just Monday
+    expect(result.previousMonday).toEqual(
+      getAustralianDateMidnight(new Date("2023-07-03")),
+    ); // Returns Just Monday
   });
 
   it("returns the correct date when currentDay is a Tuesday", () => {
-    const currentDay = new Date("2023-07-04"); // Tuesday
+    const currentDay = getAustralianDateMidnight(new Date("2023-07-04")); // Tuesday
     const result = subtractDaysFromWeek(currentDay);
-    expect(result.previousDays).toEqual(new Date("2023-07-03")); // Previous Monday
+    expect(result.previousMonday).toEqual(
+      getAustralianDateMidnight(new Date("2023-07-03")),
+    ); // Previous Monday
   });
 
   it("returns the correct date when currentDay is a Saturday", () => {
-    const currentDay = new Date("2023-07-08"); // Saturday
+    const currentDay = getAustralianDateMidnight(new Date("2023-07-08")); // Saturday
     const result = subtractDaysFromWeek(currentDay);
-    expect(result.previousDays).toEqual(new Date("2023-07-03")); // Previous Monday
+    expect(result.previousMonday).toEqual(
+      getAustralianDateMidnight(new Date("2023-07-03")),
+    ); // Previous Monday
   });
 
   it("returns the correct 2wk date when currentDay is a Saturday", () => {
-    const currentDay = new Date("2023-07-02"); // Saturday
+    const currentDay = getAustralianDateMidnight(new Date("2023-07-02")); // Saturday
     const result = subtractDaysFromWeek(currentDay);
-    expect(result.previousDaysAndWeek).toEqual(new Date("2023-06-19")); // Previous Monday
+    expect(result.previousTwoMondays).toEqual(
+      getAustralianDateMidnight(new Date("2023-06-19")),
+    ); // Previous Monday
   });
 });
 
@@ -60,27 +73,27 @@ describe("sortDataByDay", () => {
 
     const result = sortDataByDay(data);
 
-    expect(result.monday).toEqual([
+    expect(result.Monday).toEqual([
       { createdAt: "2023-06-26" }, // Monday
       { createdAt: "2023-07-10" }, // Monday (additional post)
     ]);
-    expect(result.tuesday).toEqual([
+    expect(result.Tuesday).toEqual([
       { createdAt: "2023-07-04" }, // Tuesday
     ]);
-    expect(result.wednesday).toEqual([
+    expect(result.Wednesday).toEqual([
       { createdAt: "2023-07-05" }, // Wednesday
     ]);
-    expect(result.thursday).toEqual([
+    expect(result.Thursday).toEqual([
       { createdAt: "2023-07-06" }, // Thursday
       { createdAt: "2023-07-13" }, // Thursday (additional post)
     ]);
-    expect(result.friday).toEqual([
+    expect(result.Friday).toEqual([
       { createdAt: "2023-07-07" }, // Friday
     ]);
-    expect(result.saturday).toEqual([
+    expect(result.Saturday).toEqual([
       { createdAt: "2023-07-08" }, // Saturday
     ]);
-    expect(result.sunday).toEqual([
+    expect(result.Sunday).toEqual([
       { createdAt: "2023-07-02" }, // Sunday
     ]);
   });
@@ -90,13 +103,13 @@ describe("sortDataByDay", () => {
     const result = sortDataByDay(data);
 
     expect(result).toEqual({
-      monday: [],
-      tuesday: [],
-      wednesday: [],
-      thursday: [],
-      friday: [],
-      saturday: [],
-      sunday: [],
+      Monday: [],
+      Tuesday: [],
+      Wednesday: [],
+      Thursday: [],
+      Friday: [],
+      Saturday: [],
+      Sunday: [],
     });
   });
 });
@@ -290,7 +303,7 @@ describe("addValuesTogether", () => {
 
 describe("addDailyUserEntriesTogether", () => {
   const mockData: DataMappedToDay = {
-    monday: [
+    Monday: [
       {
         id: "1",
         name: "Entry 1",
@@ -313,7 +326,7 @@ describe("addDailyUserEntriesTogether", () => {
         hours: "3",
       },
     ],
-    tuesday: [
+    Tuesday: [
       {
         id: "3",
         name: "Entry 3",
@@ -329,15 +342,15 @@ describe("addDailyUserEntriesTogether", () => {
         hours: "5",
       },
     ],
-    wednesday: [],
-    thursday: [],
-    friday: [],
-    saturday: [],
-    sunday: [],
+    Wednesday: [],
+    Thursday: [],
+    Friday: [],
+    Saturday: [],
+    Sunday: [],
   };
 
   const expectedOutput = {
-    monday: [
+    Monday: [
       {
         id: "1",
         name: "Entry 1",
@@ -355,7 +368,7 @@ describe("addDailyUserEntriesTogether", () => {
         hours: "3",
       },
     ],
-    tuesday: [
+    Tuesday: [
       {
         id: "3",
         name: "Entry 3",
@@ -373,11 +386,11 @@ describe("addDailyUserEntriesTogether", () => {
         hours: "5",
       },
     ],
-    wednesday: [],
-    thursday: [],
-    friday: [],
-    saturday: [],
-    sunday: [],
+    Wednesday: [],
+    Thursday: [],
+    Friday: [],
+    Saturday: [],
+    Sunday: [],
   } as DataMappedToDay;
 
   it("should add the values of costs and hours for each unique name", () => {
@@ -388,56 +401,78 @@ describe("addDailyUserEntriesTogether", () => {
 
 describe("sortDataByWeek", () => {
   it("should correctly separate data into two arrays based on createdAt", () => {
-    const previousDays = new Date("2023-09-20");
+    const previousMonday = getAustralianDateMidnight(new Date("2023-09-20"));
     const postData: TableData[] = [
       {
         id: "1",
         name: "Item 1",
         costs: "10",
         hours: "2",
-        createdAt: new Date("2023-09-15"),
+        createdAt: getAustralianDateMidnight(new Date("2023-09-15")),
       },
       {
         id: "2",
         name: "Item 2",
         costs: "15",
         hours: "3",
-        createdAt: new Date("2023-09-25"),
+        createdAt: getAustralianDateMidnight(new Date("2023-09-25")),
       },
     ];
 
-    const result = sortDataByWeek(postData, previousDays);
+    const result = sortDataByWeek(postData, previousMonday);
 
-    // The first array should contain items with createdAt < previousDays
+    // The first array should contain items with createdAt < previousMonday
     expect(result[0]).toEqual([
       {
         id: "1",
         name: "Item 1",
         costs: "10",
         hours: "2",
-        createdAt: new Date("2023-09-15"),
+        createdAt: getAustralianDateMidnight(new Date("2023-09-15")),
       },
     ]);
 
-    // The second array should contain items with createdAt >= previousDays
+    // The second array should contain items with createdAt >= previousMonday
     expect(result[1]).toEqual([
       {
         id: "2",
         name: "Item 2",
         costs: "15",
         hours: "3",
-        createdAt: new Date("2023-09-25"),
+        createdAt: getAustralianDateMidnight(new Date("2023-09-25")),
       },
     ]);
   });
 
   it("should handle an empty input array", () => {
-    const previousDays = new Date("2023-09-20");
+    const previousMonday = getAustralianDateMidnight(new Date("2023-09-20"));
     const postData: TableData[] = [];
 
-    const result = sortDataByWeek(postData, previousDays);
+    const result = sortDataByWeek(postData, previousMonday);
 
     expect(result[0]).toEqual([]);
     expect(result[1]).toEqual([]);
+  });
+});
+
+describe("getAustralianDateMidnight", () => {
+  it("should return the correct date in Australian Eastern Daylight Time (AEDT)", () => {
+    const date = new Date("2023-11-10T23:27:33.000Z");
+    const australianDate = getAustralianDateMidnight(date);
+
+    expect(australianDate).toEqual(
+      new Date(
+        "Sat Nov 11 2023 00:00:00 GMT+1100 (Australian Eastern Daylight Time)",
+      ),
+    );
+  });
+});
+
+describe("getAustraliaDate", () => {
+  it("should return the correct date in Australian Eastern Daylight Time (AEDT)", () => {
+    const date = new Date("2023-11-09");
+    const australianDate = getAustraliaDate(date);
+
+    expect(australianDate).toEqual(new Date("2023-11-09"));
   });
 });

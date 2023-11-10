@@ -3,7 +3,7 @@ import { LoadingSpinner } from "../LoadingSpinner";
 import { EmblaImageCarousel } from "./ImageCarousel";
 import { api } from "~/utils/api";
 import { VscTrash } from "react-icons/vsc";
-import { type SyntheticEvent } from "react";
+import { useState, type SyntheticEvent } from "react";
 
 export type Tweet = {
   id: string;
@@ -29,8 +29,11 @@ const TweetCard = ({
   buildSite,
   imageNames,
 }: Tweet) => {
+  const [isLoading, setIsLoading] = useState(false);
+
   const deletePost = api.tweet.deletePost.useMutation({
     onSuccess: () => {
+      setIsLoading(false);
       alert("post was deleted");
     },
     onError: (e) => {
@@ -41,11 +44,16 @@ const TweetCard = ({
 
   const deletePostHandler = (e: SyntheticEvent) => {
     e.preventDefault();
+    setIsLoading(true);
     deletePost.mutate({ id, imageNames });
   };
 
   return (
-    <li className="flex gap-4 border-b px-4 py-7">
+    <li
+      className={`flex gap-4 border-b px-4 py-7 ${
+        isLoading ? "animate-pulse" : ""
+      }`}
+    >
       <div className="flex flex-grow flex-col">
         <div className="flex">
           <div className="flex flex-grow flex-col">

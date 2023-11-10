@@ -1,3 +1,6 @@
+import { utcToZonedTime } from "date-fns-tz";
+import { sub, startOfDay } from "date-fns";
+
 export type RawData = {
   id: string;
   costs: string | null;
@@ -15,13 +18,13 @@ export type TableData = {
 };
 
 export type DataMappedToDay = {
-  monday: TableData[];
-  tuesday: TableData[];
-  wednesday: TableData[];
-  thursday: TableData[];
-  friday: TableData[];
-  saturday: TableData[];
-  sunday: TableData[];
+  Monday: TableData[];
+  Tuesday: TableData[];
+  Wednesday: TableData[];
+  Thursday: TableData[];
+  Friday: TableData[];
+  Saturday: TableData[];
+  Sunday: TableData[];
 };
 
 export type ComputedDailyData = {
@@ -54,14 +57,14 @@ export type WeeklyMappedData = {
   overallHours: UserHours;
 };
 
-export const sortDataByWeek = (postData: TableData[], previousDays: Date) => {
+export const sortDataByWeek = (postData: TableData[], previousMonday: Date) => {
   const first: TableData[] = [];
   const second: TableData[] = [];
 
   postData.forEach((post) => {
     const objDate = new Date(post.createdAt);
 
-    if (objDate < previousDays) {
+    if (objDate < previousMonday) {
       first.push(post);
     } else {
       second.push(post);
@@ -74,13 +77,13 @@ export const sortDataByWeek = (postData: TableData[], previousDays: Date) => {
 export const sortDataByDay = (data: TableData[]): DataMappedToDay => {
   //Mon: 1, Tues: 2, Wed: 3, Thur: 4, Fri: 5, Sat: 6, Sun: 0
   const dayGroups: DataMappedToDay = {
-    monday: [],
-    tuesday: [],
-    wednesday: [],
-    thursday: [],
-    friday: [],
-    saturday: [],
-    sunday: [],
+    Monday: [],
+    Tuesday: [],
+    Wednesday: [],
+    Thursday: [],
+    Friday: [],
+    Saturday: [],
+    Sunday: [],
   };
 
   for (const post of data) {
@@ -88,31 +91,31 @@ export const sortDataByDay = (data: TableData[]): DataMappedToDay => {
 
     switch (postDay) {
       case 0:
-        dayGroups.sunday.push(post);
+        dayGroups.Sunday.push(post);
         break;
 
       case 1:
-        dayGroups.monday.push(post);
+        dayGroups.Monday.push(post);
         break;
 
       case 2:
-        dayGroups.tuesday.push(post);
+        dayGroups.Tuesday.push(post);
         break;
 
       case 3:
-        dayGroups.wednesday.push(post);
+        dayGroups.Wednesday.push(post);
         break;
 
       case 4:
-        dayGroups.thursday.push(post);
+        dayGroups.Thursday.push(post);
         break;
 
       case 5:
-        dayGroups.friday.push(post);
+        dayGroups.Friday.push(post);
         break;
 
       case 6:
-        dayGroups.saturday.push(post);
+        dayGroups.Saturday.push(post);
         break;
 
       default:
@@ -155,13 +158,13 @@ export const addDailyUserEntriesTogether = (
   data: DataMappedToDay,
 ): ComputedDailyData => {
   return {
-    Monday: addValuesTogether(data.monday),
-    Tuesday: addValuesTogether(data.tuesday),
-    Wednesday: addValuesTogether(data.wednesday),
-    Thursday: addValuesTogether(data.thursday),
-    Friday: addValuesTogether(data.friday),
-    Saturday: addValuesTogether(data.saturday),
-    Sunday: addValuesTogether(data.sunday),
+    Monday: addValuesTogether(data.Monday),
+    Tuesday: addValuesTogether(data.Tuesday),
+    Wednesday: addValuesTogether(data.Wednesday),
+    Thursday: addValuesTogether(data.Thursday),
+    Friday: addValuesTogether(data.Friday),
+    Saturday: addValuesTogether(data.Saturday),
+    Sunday: addValuesTogether(data.Sunday),
   };
 };
 
@@ -234,11 +237,11 @@ export const flattenObject = (posts: RawData[] | TableData[]): TableData[] => {
 
 export const mapTableData = (
   postData: RawData[] | TableData[],
-  previousDays: Date,
+  previousMonday: Date,
 ): WeeklyMappedData[] => {
   const flattenedPostData = flattenObject(postData);
 
-  const dataByWeek = sortDataByWeek(flattenedPostData, previousDays);
+  const dataByWeek = sortDataByWeek(flattenedPostData, previousMonday);
 
   return dataByWeek.map((oneWeeksData): WeeklyMappedData => {
     const dataByDay = sortDataByDay(oneWeeksData);
@@ -260,16 +263,17 @@ export const mapTableData = (
 export const subtractDaysFromWeek = (currentDay: Date) => {
   const daysToSubtract = (currentDay.getDay() + 6) % 7;
 
-  const oneWeeksWorth = new Date(
-    currentDay.getTime() - daysToSubtract * 24 * 60 * 60 * 1000,
-  );
-  oneWeeksWorth.setHours(11, 59, 59, 0);
+  const previousMonday = sub(currentDay, { days: daysToSubtract });
 
-  const previousDaysAndWeek = new Date(
-    oneWeeksWorth.getTime() - 7 * 24 * 60 * 60 * 1000,
-  );
+  const previousTwoMondays = sub(previousMonday, { days: 7 });
 
-  const previousDays = new Date(oneWeeksWorth.getTime() - 24 * 60 * 60 * 1000);
+  return { previousTwoMondays, previousMonday };
+};
 
-  return { previousDaysAndWeek, previousDays };
+export const getAustralianDateMidnight = (date: Date) => {
+  return startOfDay(utcToZonedTime(date, "Australia/Sydney"));
+};
+
+export const getAustraliaDate = (date: Date) => {
+  return utcToZonedTime(date, "Australia/Sydney");
 };

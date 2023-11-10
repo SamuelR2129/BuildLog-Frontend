@@ -1,27 +1,52 @@
-import { type WeeklyMappedData } from "~/server/api/utils/tableUtils";
+import {
+  getAustralianDateMidnight,
+  type WeeklyMappedData,
+} from "~/server/api/utils/tableUtils";
 import { mapTableDataForThePage } from "../pageUtils/clientTableUtils";
 
 describe("mapTableDataForThePage", () => {
   const weeklyMappedData = [
     {
       weeklyData: {
-        Monday: {
-          hours: 10,
-          cost: 100,
-        },
-        Tuesday: {
-          hours: 20,
-          cost: 200,
-        },
+        Monday: [
+          {
+            hours: "10",
+            costs: "100",
+            name: "sam",
+            id: "123",
+            createdAt: getAustralianDateMidnight(new Date("2023-11-10")),
+          },
+          {
+            hours: "10",
+            costs: "250",
+            name: "jack",
+            id: "123",
+            createdAt: getAustralianDateMidnight(new Date("2023-11-10")),
+          },
+        ],
+        Tuesday: [
+          {
+            hours: "20",
+            costs: "200",
+            name: "sam",
+            id: "123",
+            createdAt: getAustralianDateMidnight(new Date("2023-11-10")),
+          },
+        ],
+        Wednesday: [],
+        Thursday: [],
+        Friday: [],
+        Saturday: [],
+        Sunday: [],
       },
-      overallHours: 30,
-      overallCosts: 300,
+      overallHours: { sam: 30, jack: 10 },
+      overallCosts: { sam: 300, jack: 250 },
     },
   ] as unknown as WeeklyMappedData[];
 
   const dates = {
-    previousDaysAndWeek: new Date(2023, 10, 29),
-    previousDays: new Date(2023, 10, 28),
+    previousTwoMondays: getAustralianDateMidnight(new Date("2023-10-09")),
+    previousMonday: getAustralianDateMidnight(new Date("2023-10-16")),
   };
 
   it("should return a mapped data object with the correct values", () => {
@@ -30,25 +55,61 @@ describe("mapTableDataForThePage", () => {
     expect(mappedData.table).toEqual([
       {
         weeklyData: {
-          Monday: {
-            hours: 10,
-            cost: 100,
-          },
-          Tuesday: {
-            hours: 20,
-            cost: 200,
-          },
+          Friday: [],
+          Monday: [
+            {
+              hours: "10",
+              costs: "100",
+              name: "sam",
+              id: "123",
+              createdAt: new Date(
+                "Sat Nov 10 2023 00:00:00 GMT+1100 (Australian Eastern Daylight Time)",
+              ),
+            },
+            {
+              hours: "10",
+              costs: "250",
+              name: "jack",
+              id: "123",
+              createdAt: new Date(
+                "Sat Nov 10 2023 00:00:00 GMT+1100 (Australian Eastern Daylight Time)",
+              ),
+            },
+          ],
+          Saturday: [],
+          Sunday: [],
+          Thursday: [],
+          Tuesday: [
+            {
+              hours: "20",
+              costs: "200",
+              name: "sam",
+              id: "123",
+              createdAt: new Date(
+                "Sat Nov 10 2023 00:00:00 GMT+1100 (Australian Eastern Daylight Time)",
+              ),
+            },
+          ],
+          Wednesday: [],
         },
-        totalHours: 30,
-        totalCosts: 300,
-        days: ["Monday", "Tuesday"],
-        names: ["Monday", "Tuesday"],
+        totalHours: { sam: 30, jack: 10 },
+        totalCosts: { sam: 300, jack: 250 },
+        days: [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday",
+        ],
+        names: ["sam", "jack"],
       },
     ]);
 
     expect(mappedData.previousTablesDates).toEqual({
-      start: "2023-10-23",
-      end: "2023-10-28",
+      start: "Mon Oct 09 2023",
+      end: "Mon Oct 16 2023",
     });
   });
 
@@ -57,8 +118,8 @@ describe("mapTableDataForThePage", () => {
 
     expect(mappedData.table).toEqual([]);
     expect(mappedData.previousTablesDates).toEqual({
-      start: "2023-10-23",
-      end: "2023-10-28",
+      start: "Mon Oct 09 2023",
+      end: "Mon Oct 16 2023",
     });
   });
 });

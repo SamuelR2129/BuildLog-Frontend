@@ -1,8 +1,8 @@
 import { type WeeklyMappedData } from "~/server/api/utils/tableUtils";
 
 type PastDate = {
-  previousDaysAndWeek: Date;
-  previousDays: Date;
+  previousTwoMondays: Date;
+  previousMonday: Date;
 };
 
 export const mapTableDataForThePage = (
@@ -11,7 +11,7 @@ export const mapTableDataForThePage = (
 ) => {
   const mappedData = weeklyMappedData.map((tableData) => {
     const days = Object.keys(tableData.weeklyData);
-    const names = Object.keys(tableData.overallCosts);
+    const names = Object.keys(tableData.overallCosts); //Names are attached to the overall costs as keys.
 
     return {
       weeklyData: tableData.weeklyData,
@@ -23,8 +23,8 @@ export const mapTableDataForThePage = (
   });
 
   const previousTablesDates = {
-    start: dates.previousDaysAndWeek.toDateString(),
-    end: dates.previousDays.toDateString(),
+    start: dates.previousTwoMondays.toDateString(),
+    end: dates.previousMonday.toDateString(),
   };
 
   return {

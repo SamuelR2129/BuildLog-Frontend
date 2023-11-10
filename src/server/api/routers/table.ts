@@ -4,14 +4,15 @@ import {
   type WeeklyMappedData,
   mapTableData,
   subtractDaysFromWeek,
+  getAustralianDateMidnight,
+  getAustraliaDate,
 } from "../utils/tableUtils";
-import { utcToZonedTime } from "date-fns-tz";
 
 type TableRouterReturn = {
   weeklyMappedData: WeeklyMappedData[];
   pastDate: {
-    previousDaysAndWeek: Date;
-    previousDays: Date;
+    previousTwoMondays: Date;
+    previousMonday: Date;
   };
   nextCursor:
     | {
@@ -31,7 +32,7 @@ export const tableRouter = createTRPCRouter({
     )
     .query(
       async ({ input: { cursor, limit }, ctx }): Promise<TableRouterReturn> => {
-        const currentDay = utcToZonedTime(new Date(), "Australia/Sydney");
+        const currentDay = getAustraliaDate(new Date());
         const pastDate = subtractDaysFromWeek(currentDay);
 
         const data = await ctx.db.tweet.findMany({
@@ -44,7 +45,7 @@ export const tableRouter = createTRPCRouter({
               {
                 createdAt: {
                   lte: currentDay,
-                  gte: pastDate.previousDaysAndWeek,
+                  gte: pastDate.previousTwoMondays,
                 },
               },
             ],
@@ -70,7 +71,7 @@ export const tableRouter = createTRPCRouter({
         }
 
         return {
-          weeklyMappedData: mapTableData(data, pastDate.previousDays),
+          weeklyMappedData: mapTableData(data, pastDate.previousMonday),
           pastDate,
           nextCursor,
         };
@@ -86,7 +87,7 @@ export const tableRouter = createTRPCRouter({
     )
     .query(
       async ({ input: { cursor, limit }, ctx }): Promise<TableRouterReturn> => {
-        const currentDay = utcToZonedTime(new Date(), "Australia/Sydney");
+        const currentDay = getAustraliaDate(new Date());
         const pastDate = subtractDaysFromWeek(currentDay);
 
         const data = await ctx.db.subbieEntry.findMany({
@@ -95,7 +96,7 @@ export const tableRouter = createTRPCRouter({
           where: {
             createdAt: {
               lte: currentDay,
-              gte: pastDate.previousDaysAndWeek,
+              gte: pastDate.previousTwoMondays,
             },
           },
           select: {
@@ -117,7 +118,7 @@ export const tableRouter = createTRPCRouter({
         }
 
         return {
-          weeklyMappedData: mapTableData(data, pastDate.previousDays),
+          weeklyMappedData: mapTableData(data, pastDate.previousMonday),
           pastDate,
           nextCursor,
         };

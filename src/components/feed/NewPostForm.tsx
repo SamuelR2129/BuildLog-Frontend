@@ -12,6 +12,7 @@ import { api } from "~/utils/api";
 import { CiImageOn } from "react-icons/ci";
 import { IconHoverEffect } from "../IconHoverEffect";
 import { uploadImagesToS3 } from "./imageS3Handler";
+import { removeDollarSign, removeSpacesInFileNames } from "./newPostFormUtils";
 
 type PostData = {
   content?: string;
@@ -77,6 +78,7 @@ const Form = ({ buildSites }: FormProps) => {
   const [buildSiteValue, setBuildSiteValue] = useState<string>("");
   const [imageFiles, setImageFiles] = useState<FileList | null>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>();
+  const [isLoading, setIsLoading] = useState(false);
 
   //For the text area
   const inputRef = useCallback((textArea: HTMLTextAreaElement) => {
@@ -92,6 +94,12 @@ const Form = ({ buildSites }: FormProps) => {
   //For the text area
 
   const createTweet = api.tweet.create.useMutation({
+    onError: (e) => {
+      console.error(e);
+      setIsLoading(false);
+      alert(`Error uploading the post`);
+      return;
+    },
     onSuccess: (newTweet) => {
       setContentValue("");
       setHoursValue("");
@@ -125,6 +133,8 @@ const Form = ({ buildSites }: FormProps) => {
         if (newTweet?.imageNames)
           newCacheTweet.imageNames = newTweet.imageNames.split(",");
 
+        setIsLoading(false);
+
         return {
           ...oldData,
           pages: [
@@ -153,28 +163,31 @@ const Form = ({ buildSites }: FormProps) => {
     const postData: PostData = {
       content: contentValue,
       hours: hoursValue,
-      costs: costsValue,
+      costs: removeDollarSign(costsValue),
       buildSite: buildSiteValue,
     };
 
-    if (imageFiles && imageFiles.length > 0) {
-      const imageNamesWithNoSpaces = [...imageFiles].map((image) => {
-        return image.name.replace(/ /g, "_");
-      });
+    try {
+      setIsLoading(true);
 
-      const preSignedUrls = await mutateFetchPresignedUrls({
-        imageNames: imageNamesWithNoSpaces,
-      }).catch((err) => {
-        console.error(err);
-        alert(`Error uploading the image`);
-      });
+      if (imageFiles && imageFiles.length > 0) {
+        const imageNamesWithNoSpaces = removeSpacesInFileNames(imageFiles);
 
-      preSignedUrls &&
-        preSignedUrls.map(async (url, index) => {
+        const preSignedUrls = await mutateFetchPresignedUrls({
+          imageNames: imageNamesWithNoSpaces,
+        });
+
+        preSignedUrls?.map(async (url, index) => {
           await uploadImagesToS3(url, imageFiles[index]!);
         });
 
-      postData.imageNames = imageNamesWithNoSpaces;
+        postData.imageNames = imageNamesWithNoSpaces;
+      }
+    } catch (e) {
+      console.error(e);
+      setIsLoading(false);
+      alert(`Error uploading the image`);
+      return;
     }
 
     createTweet.mutate(postData);
@@ -196,7 +209,9 @@ const Form = ({ buildSites }: FormProps) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex flex-col gap-2 border-b px-4 py-2"
+      className={`flex flex-col gap-2 border-b px-4 py-2 ${
+        isLoading ? "animate-pulse" : ""
+      }`}
     >
       <div className="flex flex-col gap-4">
         <div className="flex gap-2">

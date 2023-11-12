@@ -23,7 +23,7 @@ export const IconHoverEffect = ({
     : "";
   return (
     <div
-      className={`rounded-full p-2 transition-colors duration-200 ${redClass} ${greenClass} ${defaultClass}`}
+      className={`rounded-full p-1 transition-colors duration-200 md:p-2 ${redClass} ${greenClass} ${defaultClass}`}
     >
       {children}
     </div>

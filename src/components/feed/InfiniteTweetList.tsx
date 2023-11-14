@@ -60,14 +60,13 @@ const TweetCard = ({
       <div className="flex flex-grow flex-col">
         <div className="flex">
           <div className="flex flex-grow flex-col">
-            <div className="flex gap-1">
-              <span className="font-bold">{user.name}</span>
-              <span className="text-gray-500">-</span>
-              <span className="text-gray-500">
-                {dateTimeFormatter.format(createdAt)}
-              </span>
-            </div>
-            <span className="text-gray-500">{buildSite}</span>
+            <span className="text-sm font-bold md:text-base">{user.name}</span>
+            <span className="text-xs text-gray-500 md:text-sm">
+              {dateTimeFormatter.format(createdAt)}
+            </span>
+            <span className="text-xs text-gray-500 md:text-sm">
+              {buildSite}
+            </span>
 
             <p className="whitespace-pre-wap">{content}</p>
           </div>

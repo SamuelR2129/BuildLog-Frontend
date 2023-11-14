@@ -37,7 +37,7 @@ const Home: NextPage = () => {
                 <select
                   value={selectedTab}
                   onChange={(e) => setSelectedTab(e.target.value)}
-                  className="form-select block w-full rounded-md border border-gray-400 bg-white px-4  py-2 font-thin text-gray-400 shadow focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                  className="form-select block w-full rounded-md border border-gray-400 bg-white px-4  py-2 text-gray-400 shadow focus:border-blue-500 focus:outline-none focus:ring-blue-500 md:font-thin"
                 >
                   <option disabled selected>
                     Filter by address...
@@ -62,16 +62,6 @@ const Home: NextPage = () => {
           <h2 className="my-4 text-center text-2xl text-gray-500">
             You need to sign in
           </h2>
-          <button onClick={() => void signIn()}>
-            <IconHoverEffect green>
-              <span className="item-center flex gap-4">
-                <VscSignIn className="h-6 w-6 fill-green-700" />
-                <span className="mt-[2px] hidden self-center  text-green-700 md:flex">
-                  Sign In
-                </span>
-              </span>
-            </IconHoverEffect>
-          </button>
         </div>
       )}
     </>

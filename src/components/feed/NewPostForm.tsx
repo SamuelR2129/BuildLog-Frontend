@@ -221,7 +221,7 @@ const Form = ({ buildSites }: FormProps) => {
               value={hoursValue}
               placeholder="0"
               onChange={(e) => setHoursValue(e.target.value)}
-              className="w-full resize-none overflow-hidden rounded-lg border border-gray-400 pl-2 text-lg font-thin"
+              className="w-full resize-none overflow-hidden rounded-lg border border-gray-400 pl-2 text-lg md:font-thin"
             />
           </div>
           <div>
@@ -230,7 +230,7 @@ const Form = ({ buildSites }: FormProps) => {
               placeholder="0.00"
               value={costsValue}
               onChange={(e) => setCostsValue(e.target.value)}
-              className="w-full resize-none overflow-hidden rounded-lg border border-gray-400 pl-2 text-lg font-thin"
+              className="w-full resize-none overflow-hidden rounded-lg border border-gray-400 pl-2 text-lg md:font-thin"
             />
           </div>
         </div>
@@ -239,15 +239,15 @@ const Form = ({ buildSites }: FormProps) => {
           style={{ height: 0 }}
           value={contentValue}
           onChange={(e) => setContentValue(e.target.value)}
-          className="w-full flex-grow resize-none overflow-hidden  rounded-lg border border-gray-400 p-4 text-lg text-sm font-thin outline-none  focus:border-2 focus:border-blue-500"
+          className="w-full flex-grow resize-none overflow-hidden  rounded-lg border border-gray-400 p-4 outline-none focus:border-2  focus:border-blue-500 md:font-thin"
           placeholder="What's happening?"
         />
         <select
-          className="w-full resize-none overflow-hidden rounded-lg border border-gray-400 bg-white p-2 pl-2 text-sm font-thin text-gray-700 outline-none"
+          className="w-full resize-none overflow-hidden rounded-lg border border-gray-400 bg-white p-2 pl-2 text-sm text-gray-700 outline-none md:font-thin"
           value={buildSiteValue}
           onChange={(e) => setBuildSiteValue(e.target.value)}
         >
-          <option>Choose a build site.</option>
+          <option style={{ color: "gray" }}>Choose a build site.</option>
           {buildSites.map((site) => {
             return (
               <option key={site.id} value={site.buildSite}>

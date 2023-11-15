@@ -14,6 +14,7 @@ export const EmployeeItem = ({ open, toggle, title }: AccordionItemProps) => {
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [passwordVerifier, setPasswordVerifier] = useState<string>("");
 
   const trpcUtils = api.useUtils();
 
@@ -29,6 +30,7 @@ export const EmployeeItem = ({ open, toggle, title }: AccordionItemProps) => {
       setName("");
       setEmail("");
       setPassword("");
+      setPasswordVerifier("");
       await trpcUtils.manageEmployees.getEmployees.invalidate();
     },
     onError: (e) => {
@@ -65,6 +67,11 @@ export const EmployeeItem = ({ open, toggle, title }: AccordionItemProps) => {
       return;
     }
 
+    if (password !== passwordVerifier) {
+      alert("Passwords need to match exactly.");
+      return;
+    }
+
     createMutation.mutate({ email, name });
   };
 
@@ -85,15 +92,17 @@ export const EmployeeItem = ({ open, toggle, title }: AccordionItemProps) => {
     name,
     email,
     password,
+    passwordVerifier,
     setName,
     setEmail,
     setPassword,
+    setPasswordVerifier,
     isError,
     mutationLoading: updateMutation.isLoading,
     queryLoading: isLoading,
     entriesPresent,
     entries: data?.employees,
-    entryType: "Build Site",
+    entryType: "Employee",
     updateFormEntry,
     deleteFormEntry,
   };

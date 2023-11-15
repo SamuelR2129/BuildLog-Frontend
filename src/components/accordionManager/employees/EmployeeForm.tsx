@@ -6,7 +6,7 @@ import EmployeeFormEntry from "./EmployeeFormEntry";
 
 const style = {
   form: `flex justify-between`,
-  input: `border p-2 w-full text-md rounded`,
+  input: `border p-2 w-full text-md rounded mt-1 md:mr-1`,
   button: `p-1 ml-2`,
 };
 
@@ -22,9 +22,11 @@ type FormProps = {
     name: string;
     email: string;
     password: string;
+    passwordVerifier: string;
     setName: React.Dispatch<React.SetStateAction<string>>;
     setEmail: React.Dispatch<React.SetStateAction<string>>;
     setPassword: React.Dispatch<React.SetStateAction<string>>;
+    setPasswordVerifier: React.Dispatch<React.SetStateAction<string>>;
     isError: boolean;
     mutationLoading: boolean;
     queryLoading: boolean;
@@ -49,6 +51,8 @@ export const EmployeeForm = ({
     setName,
     setEmail,
     setPassword,
+    setPasswordVerifier,
+    passwordVerifier,
     isError,
     mutationLoading,
     queryLoading,
@@ -63,27 +67,42 @@ export const EmployeeForm = ({
     <div className="relative bottom-1.5 rounded-md bg-gray-100 px-1 pb-1">
       <div className="border-1 m-auto w-full rounded-lg border bg-white p-2 text-xs md:p-4">
         <form className={style.form} onSubmit={createEntry}>
-          <input
-            className={style.input}
-            type="text"
-            placeholder={`Add a name.`}
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-          <input
-            className={style.input}
-            type="text"
-            placeholder={`Add a email.`}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <input
-            className={style.input}
-            type="text"
-            placeholder={`Add a password`}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <div className="flex flex-grow flex-col">
+            <div className="flex flex-grow flex-col md:flex-row">
+              <input
+                className={style.input}
+                type="text"
+                placeholder={`Add a name.`}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+              <input
+                className={style.input}
+                type="email"
+                placeholder={`Add a email.`}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+
+            <div className="flex flex-grow flex-col md:flex-row">
+              <input
+                className={style.input}
+                type="text"
+                placeholder={`Add a password`}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <input
+                className={style.input}
+                type="text"
+                placeholder={`Retype your password`}
+                value={passwordVerifier}
+                onChange={(e) => setPasswordVerifier(e.target.value)}
+              />
+            </div>
+          </div>
+
           <button className={style.button}>
             <IconHoverEffect>
               <VscAdd size={30} className="text-blue-500" />

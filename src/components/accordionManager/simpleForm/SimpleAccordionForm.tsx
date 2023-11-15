@@ -1,7 +1,7 @@
 import { VscAdd } from "react-icons/vsc";
 import FormEntry from "./FormEntry";
-import { LoadingSpinner } from "../LoadingSpinner";
-import { IconHoverEffect } from "../IconHoverEffect";
+import { LoadingSpinner } from "../../LoadingSpinner";
+import { IconHoverEffect } from "../../IconHoverEffect";
 import { type FormEvent } from "react";
 
 const getContent = (entry: { buildSite: string } | { subbieName: string }) => {

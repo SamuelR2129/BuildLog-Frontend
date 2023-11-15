@@ -5,6 +5,7 @@ import { tableRouter } from "./routers/table";
 import { subbieRouter } from "./routers/subbies";
 import { buildSiteRouter } from "./routers/manageRouters/buildSite";
 import { manageSubbieRouter } from "./routers/manageRouters/subbie";
+import { manageEmployeesRouter } from "./routers/manageRouters/employee";
 
 /**
  * This is the primary router for your server.
@@ -18,6 +19,7 @@ export const appRouter = createTRPCRouter({
   subbie: subbieRouter,
   manageBuildSites: buildSiteRouter,
   manageSubbies: manageSubbieRouter,
+  manageEmployees: manageEmployeesRouter,
 });
 
 // export type definition of API

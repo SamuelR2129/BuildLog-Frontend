@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { BuildSiteItem } from "~/components/accordionManager/BuildSiteItem";
-import { EmployeeItem } from "~/components/accordionManager/EmployeeItem";
-import { SubbieItem } from "~/components/accordionManager/SubbieItem";
+import { BuildSiteControl } from "~/components/accordionManager/BuildSiteControl";
+import { EmployeeItem } from "~/components/accordionManager/employees/EmployeeControl";
+import { SubbieControl } from "~/components/accordionManager/SubbieControl";
 import { Header } from "~/components/Header";
 
 const Manage = () => {
@@ -26,12 +26,12 @@ const Manage = () => {
       </div>
       <section className="grid h-screen">
         <div className="px-3 ">
-          <BuildSiteItem
+          <BuildSiteControl
             open={open === 0}
             title={"Build Site"}
             toggle={() => toggle(0)}
           />
-          <SubbieItem
+          <SubbieControl
             open={open === 1}
             title={"Subbies"}
             toggle={() => toggle(1)}

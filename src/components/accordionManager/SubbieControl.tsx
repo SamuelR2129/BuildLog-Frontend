@@ -3,9 +3,9 @@ import { Collapse } from "react-collapse";
 import { type AccordionItemProps } from "./types";
 import { AccordionHeader } from "./AccordionHeader";
 import { api } from "~/utils/api";
-import { SimpleAccordionForm } from "./SimpleAccordionForm";
+import { SimpleAccordionForm } from "./simpleForm/SimpleAccordionForm";
 
-export const SubbieItem = ({ open, toggle, title }: AccordionItemProps) => {
+export const SubbieControl = ({ open, toggle, title }: AccordionItemProps) => {
   const trpcUtils = api.useUtils();
   const [input, setInput] = useState("");
 

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { VscCheck, VscTrash } from "react-icons/vsc";
 import { TbEdit } from "react-icons/tb";
-import { IconHoverEffect } from "../IconHoverEffect";
+import { IconHoverEffect } from "../../IconHoverEffect";
 
 const style = {
   li: `flex justify-between bg-slate-50 py-4 px-2 mt-2 rounded border`,
@@ -11,20 +11,26 @@ const style = {
   input: `text-base pl-1 ml-2 rounded`,
 };
 
+export type UserValue = {
+  email: string;
+  name: string;
+};
+
 type EntryProps = {
   id: string;
-  value: string;
-  updateFormEntry: (id: string, value: string) => void;
+  value: UserValue;
+  updateFormEntry: (id: string, value: UserValue) => void;
   deleteFormEntry: (id: string) => void;
 };
 
-const FormEntry = ({
+const EmployeeFormEntry = ({
   id,
   value,
   updateFormEntry,
   deleteFormEntry,
 }: EntryProps) => {
-  const [editedValue, setEditedValue] = useState(value);
+  const [editedNameValue, setEditedNameValue] = useState(value.name);
+  const [editedEmailValue, setEditedEmailValue] = useState(value.email);
   const [isEditing, setIsEditing] = useState(false);
 
   /* When you click the edit button, it will swap out the text for 
@@ -40,7 +46,14 @@ const FormEntry = ({
             </IconHoverEffect>
           </button>
         ) : (
-          <button onClick={() => updateFormEntry(id, editedValue)}>
+          <button
+            onClick={() =>
+              updateFormEntry(id, {
+                name: editedNameValue,
+                email: editedEmailValue,
+              })
+            }
+          >
             <IconHoverEffect green>
               <VscCheck size={20} className="text-green-700" />
             </IconHoverEffect>
@@ -48,13 +61,24 @@ const FormEntry = ({
         )}
 
         {!isEditing ? (
-          <p className={style.text}>{value}</p>
+          <p className={style.text}>{value.name}</p>
         ) : (
           <input
             className={style.input}
             type="text"
-            value={editedValue}
-            onChange={(e) => setEditedValue(e.target.value)}
+            value={editedNameValue}
+            onChange={(e) => setEditedNameValue(e.target.value)}
+          />
+        )}
+
+        {!isEditing ? (
+          <p className={style.text}>{value.email}</p>
+        ) : (
+          <input
+            className={style.input}
+            type="text"
+            value={editedEmailValue}
+            onChange={(e) => setEditedEmailValue(e.target.value)}
           />
         )}
       </div>
@@ -73,4 +97,4 @@ const FormEntry = ({
   );
 };
 
-export default FormEntry;
+export default EmployeeFormEntry;

@@ -8,6 +8,7 @@ import { EmployeeForm } from "./EmployeeForm";
 export type EmployeeInput = {
   name: string;
   email: string;
+  password?: string;
 };
 
 export const EmployeeItem = ({ open, toggle, title }: AccordionItemProps) => {
@@ -67,17 +68,29 @@ export const EmployeeItem = ({ open, toggle, title }: AccordionItemProps) => {
       return;
     }
 
+    if (!password.match(new RegExp(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{5,}$/))) {
+      alert(
+        "Password must be atleast 4 characters long, have 1 uppercase letter, 1 lowercase letter and a number.",
+      );
+      return;
+    }
+
     if (password !== passwordVerifier) {
       alert("Passwords need to match exactly.");
       return;
     }
 
-    createMutation.mutate({ email, name });
+    createMutation.mutate({ email, name, password, passwordVerifier });
   };
 
   //update employee
   const updateFormEntry = (id: string, formValue: EmployeeInput) => {
-    updateMutation.mutate({ id, email: formValue.email, name: formValue.name });
+    updateMutation.mutate({
+      id,
+      email: formValue.email,
+      name: formValue.name,
+      password: formValue.password,
+    });
   };
 
   //delete employee

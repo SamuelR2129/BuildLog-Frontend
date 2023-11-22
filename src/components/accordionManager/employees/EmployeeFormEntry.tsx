@@ -8,12 +8,13 @@ const style = {
   row: `flex items-center`,
   text: `ml-2 text-center pt-[1px]`,
   button: `cursor-pointer flex items-center `,
-  input: `text-base pl-1 ml-2 rounded`,
+  input: `text-base pl-1 ml-2 rounded border`,
 };
 
 export type UserValue = {
   email: string;
   name: string;
+  password?: string;
 };
 
 type EntryProps = {
@@ -31,6 +32,9 @@ const EmployeeFormEntry = ({
 }: EntryProps) => {
   const [editedNameValue, setEditedNameValue] = useState(value.name);
   const [editedEmailValue, setEditedEmailValue] = useState(value.email);
+  const [editedPasswordValue, setEditedPasswordValue] = useState<
+    string | undefined
+  >();
   const [isEditing, setIsEditing] = useState(false);
 
   /* When you click the edit button, it will swap out the text for 
@@ -51,6 +55,7 @@ const EmployeeFormEntry = ({
               updateFormEntry(id, {
                 name: editedNameValue,
                 email: editedEmailValue,
+                password: editedPasswordValue,
               })
             }
           >
@@ -79,6 +84,18 @@ const EmployeeFormEntry = ({
             type="text"
             value={editedEmailValue}
             onChange={(e) => setEditedEmailValue(e.target.value)}
+          />
+        )}
+
+        {!isEditing ? (
+          <p className={style.text}>*******</p>
+        ) : (
+          <input
+            className={style.input}
+            type="text"
+            value={editedPasswordValue}
+            placeholder="Enter new password."
+            onChange={(e) => setEditedPasswordValue(e.target.value)}
           />
         )}
       </div>

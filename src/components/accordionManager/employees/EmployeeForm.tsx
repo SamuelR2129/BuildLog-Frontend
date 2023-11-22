@@ -35,7 +35,7 @@ type FormProps = {
     entries: UserEntry[] | undefined;
     updateFormEntry: (
       id: string,
-      formValue: { name: string; email: string },
+      formValue: { name: string; email: string; password?: string },
     ) => void;
     deleteFormEntry: (id: string) => void;
     entryType: string;
@@ -89,14 +89,14 @@ export const EmployeeForm = ({
               <input
                 className={style.input}
                 type="text"
-                placeholder={`Add a password`}
+                placeholder={`Add a password.`}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
               <input
                 className={style.input}
                 type="text"
-                placeholder={`Retype your password`}
+                placeholder={`Retype your password.`}
                 value={passwordVerifier}
                 onChange={(e) => setPasswordVerifier(e.target.value)}
               />

@@ -1,5 +1,18 @@
+import { ApiResponse, GetUsers200ResponseOneOfInner } from "auth0";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import {
+  createAuth0User,
+  deleteAuth0User,
+  updateAuth0User,
+} from "~/server/auth0";
+
+type UpdateOptions = {
+  email: string;
+  name: string;
+  password?: string;
+  connection: "Username-Password-Authentication";
+};
 
 export const manageEmployeesRouter = createTRPCRouter({
   getEmployees: protectedProcedure.query(async ({ ctx }) => {
@@ -26,9 +39,20 @@ export const manageEmployeesRouter = createTRPCRouter({
         id: z.string(),
         name: z.string(),
         email: z.string(),
+        password: z.string().optional(),
       }),
     )
-    .mutation(async ({ input: { id, name, email }, ctx }) => {
+    .mutation(async ({ input: { id, name, email, password }, ctx }) => {
+      const auth0Options: UpdateOptions = {
+        email,
+        name,
+        connection: "Username-Password-Authentication",
+      };
+
+      if (password) auth0Options.password = password;
+
+      await updateAuth0User(JSON.stringify(auth0Options), id);
+
       return await ctx.db.user.update({
         where: {
           id,
@@ -47,6 +71,8 @@ export const manageEmployeesRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input: { id }, ctx }) => {
+      await deleteAuth0User(id);
+
       await ctx.db.user.delete({
         where: {
           id,
@@ -57,16 +83,36 @@ export const manageEmployeesRouter = createTRPCRouter({
   createEmployee: protectedProcedure
     .input(
       z.object({
-        name: z.string(),
-        email: z.string(),
+        name: z.string().min(1),
+        email: z.string().email(),
+        password: z.string().min(1),
+        passwordVerifier: z.string().min(1),
       }),
     )
-    .mutation(async ({ input: { name, email }, ctx }) => {
-      return await ctx.db.user.create({
-        data: {
-          name,
+    .mutation(
+      async ({ input: { name, email, password, passwordVerifier }, ctx }) => {
+        if (password !== passwordVerifier) {
+          throw new Error("The password needs to match the passwordVerifier");
+        }
+
+        const data = JSON.stringify({
           email,
-        },
-      });
-    }),
+          name,
+          password,
+          connection: "Username-Password-Authentication",
+        });
+
+        const authRes = await createAuth0User(data);
+
+        if (authRes instanceof Error) throw new Error(authRes.message);
+
+        return await ctx.db.user.create({
+          data: {
+            id: authRes.user_id,
+            name,
+            email,
+          },
+        });
+      },
+    ),
 });

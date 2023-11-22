@@ -25,6 +25,7 @@
     "@trpc/next": "^10.37.1",
     "@trpc/react-query": "^10.37.1",
     "@trpc/server": "^10.37.1",
+    "auth0": "^4.1.0",
     "aws-cli": "^0.0.2",
     "date-fns": "^2.30.0",
     "date-fns-tz": "^2.0.0",

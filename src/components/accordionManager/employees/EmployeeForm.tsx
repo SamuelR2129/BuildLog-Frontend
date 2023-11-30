@@ -14,6 +14,7 @@ type UserEntry = {
   email: string;
   name: string;
   id: string;
+  admin: boolean;
 };
 
 type FormProps = {
@@ -35,10 +36,17 @@ type FormProps = {
     entries: UserEntry[] | undefined;
     updateFormEntry: (
       id: string,
-      formValue: { name: string; email: string; password?: string },
+      formValue: {
+        name: string;
+        email: string;
+        password?: string;
+        admin: boolean;
+      },
     ) => void;
     deleteFormEntry: (id: string) => void;
     entryType: string;
+    setIsAdmin: (admin: boolean) => void;
+    admin: boolean;
   };
 };
 
@@ -61,6 +69,8 @@ export const EmployeeForm = ({
     entryType,
     updateFormEntry,
     deleteFormEntry,
+    setIsAdmin,
+    admin,
   },
 }: FormProps) => {
   return (
@@ -101,6 +111,18 @@ export const EmployeeForm = ({
                 onChange={(e) => setPasswordVerifier(e.target.value)}
               />
             </div>
+            <div className="my-2 flex flex-grow">
+              <span className=" text-gray-500">User is admin: </span>
+              <div className="flex items-center pl-2">
+                <input
+                  id="adminCheckbox"
+                  type="checkbox"
+                  onChange={() => {
+                    setIsAdmin(!admin);
+                  }}
+                />
+              </div>
+            </div>
           </div>
 
           <button className={style.button}>
@@ -128,6 +150,8 @@ export const EmployeeForm = ({
                       value={entry}
                       updateFormEntry={updateFormEntry}
                       deleteFormEntry={deleteFormEntry}
+                      admin={admin}
+                      setIsAdmin={setIsAdmin}
                     />
                   );
                 })}

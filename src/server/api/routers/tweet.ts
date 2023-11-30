@@ -119,7 +119,6 @@ export const tweetRouter = createTRPCRouter({
         ctx,
       }) => {
         const stringifiedImageNames = imageNames?.toString();
-        console.log(hours, costs);
         return await ctx.db.tweet.create({
           data: {
             content,

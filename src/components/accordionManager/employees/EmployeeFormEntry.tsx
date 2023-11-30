@@ -15,6 +15,7 @@ export type UserValue = {
   email: string;
   name: string;
   password?: string;
+  admin: boolean;
 };
 
 type EntryProps = {
@@ -22,6 +23,8 @@ type EntryProps = {
   value: UserValue;
   updateFormEntry: (id: string, value: UserValue) => void;
   deleteFormEntry: (id: string) => void;
+  admin: boolean;
+  setIsAdmin: (admin: boolean) => void;
 };
 
 const EmployeeFormEntry = ({
@@ -29,6 +32,8 @@ const EmployeeFormEntry = ({
   value,
   updateFormEntry,
   deleteFormEntry,
+  setIsAdmin,
+  admin,
 }: EntryProps) => {
   const [editedNameValue, setEditedNameValue] = useState(value.name);
   const [editedEmailValue, setEditedEmailValue] = useState(value.email);
@@ -56,6 +61,7 @@ const EmployeeFormEntry = ({
                 name: editedNameValue,
                 email: editedEmailValue,
                 password: editedPasswordValue,
+                admin,
               })
             }
           >
@@ -64,40 +70,58 @@ const EmployeeFormEntry = ({
             </IconHoverEffect>
           </button>
         )}
+        <div className="flex flex-col">
+          <div className="flex">
+            {!isEditing ? (
+              <p className={style.text}>{value.name}</p>
+            ) : (
+              <input
+                className={style.input}
+                type="text"
+                value={editedNameValue}
+                onChange={(e) => setEditedNameValue(e.target.value)}
+              />
+            )}
 
-        {!isEditing ? (
-          <p className={style.text}>{value.name}</p>
-        ) : (
-          <input
-            className={style.input}
-            type="text"
-            value={editedNameValue}
-            onChange={(e) => setEditedNameValue(e.target.value)}
-          />
-        )}
+            {!isEditing ? (
+              <p className={style.text}>{value.email}</p>
+            ) : (
+              <input
+                className={style.input}
+                type="text"
+                value={editedEmailValue}
+                onChange={(e) => setEditedEmailValue(e.target.value)}
+              />
+            )}
+          </div>
 
-        {!isEditing ? (
-          <p className={style.text}>{value.email}</p>
-        ) : (
-          <input
-            className={style.input}
-            type="text"
-            value={editedEmailValue}
-            onChange={(e) => setEditedEmailValue(e.target.value)}
-          />
-        )}
+          <div className="flex">
+            {isEditing ? (
+              <div className="flex">
+                <span className="pl-2 text-sm">Admin: </span>
+                <input
+                  className={style.input}
+                  type="checkbox"
+                  onChange={() => setIsAdmin(!!admin)}
+                />
+              </div>
+            ) : value.admin ? (
+              <span className="pl-2 text-blue-400">Admin</span>
+            ) : null}
 
-        {!isEditing ? (
-          <p className={style.text}>*******</p>
-        ) : (
-          <input
-            className={style.input}
-            type="text"
-            value={editedPasswordValue}
-            placeholder="Enter new password."
-            onChange={(e) => setEditedPasswordValue(e.target.value)}
-          />
-        )}
+            {!isEditing ? (
+              <p className={style.text}>#########</p>
+            ) : (
+              <input
+                className={style.input}
+                type="text"
+                value={editedPasswordValue}
+                placeholder="Enter new password."
+                onChange={(e) => setEditedPasswordValue(e.target.value)}
+              />
+            )}
+          </div>
+        </div>
       </div>
 
       <button

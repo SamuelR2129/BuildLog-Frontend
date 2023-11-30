@@ -9,12 +9,14 @@ export type EmployeeInput = {
   name: string;
   email: string;
   password?: string;
+  admin: boolean;
 };
 
 export const EmployeeItem = ({ open, toggle, title }: AccordionItemProps) => {
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [admin, setIsAdmin] = useState<boolean>(false);
   const [passwordVerifier, setPasswordVerifier] = useState<string>("");
 
   const trpcUtils = api.useUtils();
@@ -32,6 +34,11 @@ export const EmployeeItem = ({ open, toggle, title }: AccordionItemProps) => {
       setEmail("");
       setPassword("");
       setPasswordVerifier("");
+      setIsAdmin(false);
+      const checkbox = document.getElementById(
+        "adminCheckbox",
+      ) as HTMLInputElement;
+      checkbox.checked = false;
       await trpcUtils.manageEmployees.getEmployees.invalidate();
     },
     onError: (e) => {
@@ -68,9 +75,9 @@ export const EmployeeItem = ({ open, toggle, title }: AccordionItemProps) => {
       return;
     }
 
-    if (!password.match(new RegExp(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{5,}$/))) {
+    if (!password.match(new RegExp(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{6,}$/))) {
       alert(
-        "Password must be atleast 4 characters long, have 1 uppercase letter, 1 lowercase letter and a number.",
+        "Password must be atleast 6 characters long, have 1 uppercase letter, 1 lowercase letter and a number.",
       );
       return;
     }
@@ -80,7 +87,7 @@ export const EmployeeItem = ({ open, toggle, title }: AccordionItemProps) => {
       return;
     }
 
-    createMutation.mutate({ email, name, password, passwordVerifier });
+    createMutation.mutate({ email, name, password, passwordVerifier, admin });
   };
 
   //update employee
@@ -90,6 +97,7 @@ export const EmployeeItem = ({ open, toggle, title }: AccordionItemProps) => {
       email: formValue.email,
       name: formValue.name,
       password: formValue.password,
+      admin: formValue.admin,
     });
   };
 
@@ -118,6 +126,8 @@ export const EmployeeItem = ({ open, toggle, title }: AccordionItemProps) => {
     entryType: "Employee",
     updateFormEntry,
     deleteFormEntry,
+    setIsAdmin,
+    admin,
   };
 
   return (

@@ -1,4 +1,3 @@
-import { ApiResponse, GetUsers200ResponseOneOfInner } from "auth0";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import {
@@ -11,6 +10,7 @@ type UpdateOptions = {
   email: string;
   name: string;
   password?: string;
+  app_metadata: { admin: boolean };
   connection: "Username-Password-Authentication";
 };
 
@@ -25,6 +25,7 @@ export const manageEmployeesRouter = createTRPCRouter({
         name: true,
         email: true,
         createdAt: true,
+        admin: true,
       },
     });
 
@@ -40,12 +41,14 @@ export const manageEmployeesRouter = createTRPCRouter({
         name: z.string(),
         email: z.string(),
         password: z.string().optional(),
+        admin: z.boolean(),
       }),
     )
-    .mutation(async ({ input: { id, name, email, password }, ctx }) => {
+    .mutation(async ({ input: { id, name, email, password, admin }, ctx }) => {
       const auth0Options: UpdateOptions = {
         email,
         name,
+        app_metadata: { admin },
         connection: "Username-Password-Authentication",
       };
 
@@ -60,6 +63,7 @@ export const manageEmployeesRouter = createTRPCRouter({
         data: {
           name,
           email,
+          admin,
         },
       });
     }),
@@ -87,10 +91,14 @@ export const manageEmployeesRouter = createTRPCRouter({
         email: z.string().email(),
         password: z.string().min(1),
         passwordVerifier: z.string().min(1),
+        admin: z.boolean(),
       }),
     )
     .mutation(
-      async ({ input: { name, email, password, passwordVerifier }, ctx }) => {
+      async ({
+        input: { name, email, password, passwordVerifier, admin },
+        ctx,
+      }) => {
         if (password !== passwordVerifier) {
           throw new Error("The password needs to match the passwordVerifier");
         }
@@ -99,6 +107,7 @@ export const manageEmployeesRouter = createTRPCRouter({
           email,
           name,
           password,
+          app_metadata: { admin },
           connection: "Username-Password-Authentication",
         });
 
@@ -111,6 +120,7 @@ export const manageEmployeesRouter = createTRPCRouter({
             id: authRes.user_id,
             name,
             email,
+            admin,
           },
         });
       },

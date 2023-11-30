@@ -28,8 +28,6 @@ const Subbies = () => {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
-    console.log(hoursValue, costsValue, subbieValue);
-
     if (!hoursValue || !costsValue || !subbieValue) {
       alert("Select all inputs");
       return;
@@ -73,7 +71,6 @@ const Subbies = () => {
                       className="block w-full appearance-none rounded border border-gray-200 bg-gray-200 px-4 py-3 pr-8 leading-tight text-gray-700 focus:border-gray-500 focus:bg-white focus:outline-none"
                       id="grid-state"
                       onChange={(e) => {
-                        console.log("Subbbie", e.target.name);
                         setSubbieName(e.target.value);
                       }}
                     >

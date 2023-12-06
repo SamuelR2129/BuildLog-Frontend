@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { VscCheck, VscTrash } from "react-icons/vsc";
 import { TbEdit } from "react-icons/tb";
 import { IconHoverEffect } from "../../IconHoverEffect";
+import { type UserEntry } from "./EmployeeForm";
 
 const style = {
   li: `flex justify-between bg-slate-50 py-4 px-2 mt-2 rounded border`,
@@ -19,16 +20,16 @@ export type UserValue = {
 };
 
 type EntryProps = {
-  id: string;
-  value: UserValue;
-  updateFormEntry: (id: string, value: UserValue) => void;
-  deleteFormEntry: (id: string) => void;
+  user_id: string;
+  value: UserEntry;
+  updateFormEntry: (user_id: string, value: UserValue) => void;
+  deleteFormEntry: (user_id: string) => void;
   admin: boolean;
   setIsAdmin: (admin: boolean) => void;
 };
 
 const EmployeeFormEntry = ({
-  id,
+  user_id,
   value,
   updateFormEntry,
   deleteFormEntry,
@@ -57,7 +58,7 @@ const EmployeeFormEntry = ({
         ) : (
           <button
             onClick={() =>
-              updateFormEntry(id, {
+              updateFormEntry(user_id, {
                 name: editedNameValue,
                 email: editedEmailValue,
                 password: editedPasswordValue,
@@ -105,7 +106,7 @@ const EmployeeFormEntry = ({
                   onChange={() => setIsAdmin(!!admin)}
                 />
               </div>
-            ) : value.admin ? (
+            ) : value?.user_metadata?.admin ? (
               <span className="pl-2 text-blue-400">Admin</span>
             ) : null}
 
@@ -127,7 +128,7 @@ const EmployeeFormEntry = ({
       <button
         onClick={() => {
           if (!confirm("Are you sure you want to delete?")) return;
-          deleteFormEntry(id);
+          deleteFormEntry(user_id);
         }}
       >
         <IconHoverEffect red>

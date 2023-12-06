@@ -3,6 +3,7 @@ import { LoadingSpinner } from "../../LoadingSpinner";
 import { IconHoverEffect } from "../../IconHoverEffect";
 import { type FormEvent } from "react";
 import EmployeeFormEntry from "./EmployeeFormEntry";
+import { GetUsers200ResponseOneOfInner } from "auth0";
 
 const style = {
   form: `flex justify-between`,
@@ -10,11 +11,11 @@ const style = {
   button: `p-1 ml-2`,
 };
 
-type UserEntry = {
+export type UserEntry = {
   email: string;
   name: string;
-  id: string;
-  admin: boolean;
+  user_id: string;
+  user_metadata: { admin: boolean };
 };
 
 type FormProps = {
@@ -32,10 +33,9 @@ type FormProps = {
     mutationLoading: boolean;
     queryLoading: boolean;
     entriesPresent: boolean | undefined;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    entries: UserEntry[] | undefined;
+    employees: UserEntry[] | undefined;
     updateFormEntry: (
-      id: string,
+      user_id: string,
       formValue: {
         name: string;
         email: string;
@@ -43,7 +43,7 @@ type FormProps = {
         admin: boolean;
       },
     ) => void;
-    deleteFormEntry: (id: string) => void;
+    deleteFormEntry: (user_id: string) => void;
     entryType: string;
     setIsAdmin: (admin: boolean) => void;
     admin: boolean;
@@ -65,7 +65,7 @@ export const EmployeeForm = ({
     mutationLoading,
     queryLoading,
     entriesPresent,
-    entries,
+    employees,
     entryType,
     updateFormEntry,
     deleteFormEntry,
@@ -142,12 +142,12 @@ export const EmployeeForm = ({
           <>
             {entriesPresent ? (
               <ul>
-                {entries?.map((entry, index) => {
+                {employees?.map((employee, index) => {
                   return (
                     <EmployeeFormEntry
                       key={index}
-                      id={entry.id}
-                      value={entry}
+                      user_id={employee.user_id}
+                      value={employee}
                       updateFormEntry={updateFormEntry}
                       deleteFormEntry={deleteFormEntry}
                       admin={admin}

@@ -4,6 +4,7 @@ import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import {
   createAuth0User,
   deleteAuth0User,
+  getAuth0Users,
   updateAuth0User,
 } from "~/server/auth0";
 
@@ -17,72 +18,46 @@ type UpdateOptions = {
 
 export const manageEmployeesRouter = createTRPCRouter({
   getEmployees: protectedProcedure.query(async ({ ctx }) => {
-    const data = await ctx.db.user.findMany({
-      orderBy: {
-        createdAt: "desc",
-      },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        createdAt: true,
-        admin: true,
-      },
-    });
-
+    const employees = await getAuth0Users();
     return {
-      employees: data,
+      employees,
     };
   }),
 
   updateEmployee: protectedProcedure
     .input(
       z.object({
-        id: z.string(),
+        user_id: z.string(),
         name: z.string(),
         email: z.string(),
         password: z.string().optional(),
         admin: z.boolean(),
       }),
     )
-    .mutation(async ({ input: { id, name, email, password, admin }, ctx }) => {
-      const auth0Options: UpdateOptions = {
-        email,
-        name,
-        app_metadata: { admin },
-        connection: "Username-Password-Authentication",
-      };
-
-      if (password) auth0Options.password = password;
-
-      await updateAuth0User(JSON.stringify(auth0Options), id);
-
-      return await ctx.db.user.update({
-        where: {
-          id,
-        },
-        data: {
-          name,
+    .mutation(
+      async ({ input: { user_id, name, email, password, admin }, ctx }) => {
+        const auth0Options: UpdateOptions = {
           email,
-          admin,
-        },
-      });
-    }),
+          name,
+          app_metadata: { admin },
+          connection: "Username-Password-Authentication",
+        };
+
+        if (password) auth0Options.password = password;
+
+        await updateAuth0User(JSON.stringify(auth0Options), user_id);
+      },
+    ),
 
   deleteEmployee: protectedProcedure
     .input(
       z.object({
-        id: z.string(),
+        user_id: z.string(),
       }),
     )
-    .mutation(async ({ input: { id }, ctx }) => {
-      await deleteAuth0User(id);
-
-      await ctx.db.user.delete({
-        where: {
-          id,
-        },
-      });
+    .mutation(async ({ input: { user_id }, ctx }) => {
+      await deleteAuth0User(user_id);
+      return user_id;
     }),
 
   createEmployee: protectedProcedure
@@ -96,10 +71,7 @@ export const manageEmployeesRouter = createTRPCRouter({
       }),
     )
     .mutation(
-      async ({
-        input: { name, email, password, passwordVerifier, admin },
-        ctx,
-      }) => {
+      async ({ input: { name, email, password, passwordVerifier, admin } }) => {
         if (password !== passwordVerifier) {
           throw new Error("The password needs to match the passwordVerifier");
         }
@@ -112,9 +84,7 @@ export const manageEmployeesRouter = createTRPCRouter({
           connection: "Username-Password-Authentication",
         });
 
-        const authRes = await createAuth0User(data);
-
-        if (authRes instanceof Error) throw new Error(authRes.message);
+        await createAuth0User(data);
       },
     ),
 });

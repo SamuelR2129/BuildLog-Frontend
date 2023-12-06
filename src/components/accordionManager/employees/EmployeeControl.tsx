@@ -1,9 +1,9 @@
-import React, { type FormEvent, useState } from "react";
+import React, { type FormEvent, useState, useEffect } from "react";
 import { Collapse } from "react-collapse";
 import { type AccordionItemProps } from "../types";
 import { AccordionHeader } from "../AccordionHeader";
 import { api } from "~/utils/api";
-import { EmployeeForm } from "./EmployeeForm";
+import { EmployeeForm, UserEntry } from "./EmployeeForm";
 import { useSession } from "next-auth/react";
 
 export type EmployeeInput = {
@@ -18,6 +18,7 @@ export const EmployeeItem = ({ open, toggle, title }: AccordionItemProps) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [admin, setIsAdmin] = useState<boolean>(false);
+  const [employees, setEmployees] = useState<UserEntry[]>();
   const [passwordVerifier, setPasswordVerifier] = useState<string>("");
   const session = useSession();
 
@@ -29,6 +30,9 @@ export const EmployeeItem = ({ open, toggle, title }: AccordionItemProps) => {
   if (isError) {
     console.error("Error getting employee entries");
   }
+  useEffect(() => {
+    setEmployees(data?.employees);
+  }, [data?.employees]);
 
   const createMutation = api.manageEmployees.createEmployee.useMutation({
     onSuccess: async () => {
@@ -60,8 +64,12 @@ export const EmployeeItem = ({ open, toggle, title }: AccordionItemProps) => {
   });
 
   const deleteMutation = api.manageEmployees.deleteEmployee.useMutation({
-    onSuccess: async () => {
-      await trpcUtils.manageEmployees.getEmployees.invalidate();
+    onSuccess: (user_id) => {
+      const newEmployees = employees?.filter(
+        (employee) => employee.user_id !== user_id,
+      );
+
+      setEmployees(newEmployees);
     },
     onError: (e) => {
       console.error(e);
@@ -93,9 +101,9 @@ export const EmployeeItem = ({ open, toggle, title }: AccordionItemProps) => {
   };
 
   //update employee
-  const updateFormEntry = (id: string, formValue: EmployeeInput) => {
+  const updateFormEntry = (user_id: string, formValue: EmployeeInput) => {
     updateMutation.mutate({
-      id,
+      user_id,
       email: formValue.email,
       name: formValue.name,
       password: formValue.password,
@@ -104,11 +112,13 @@ export const EmployeeItem = ({ open, toggle, title }: AccordionItemProps) => {
   };
 
   //delete employee
-  const deleteFormEntry = (id: string) => {
-    deleteMutation.mutate({ id });
+  const deleteFormEntry = (user_id: string) => {
+    deleteMutation.mutate({ user_id });
   };
 
-  const entriesPresent = data && data.employees.length > 0;
+  const entriesPresent = employees && employees.length > 0;
+
+  console.log(data?.employees);
 
   const formProps = {
     createEntry: createEntry,
@@ -124,7 +134,7 @@ export const EmployeeItem = ({ open, toggle, title }: AccordionItemProps) => {
     mutationLoading: updateMutation.isLoading,
     queryLoading: isLoading,
     entriesPresent,
-    entries: data?.employees,
+    employees: employees,
     entryType: "Employee",
     updateFormEntry,
     deleteFormEntry,

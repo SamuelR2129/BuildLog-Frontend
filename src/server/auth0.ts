@@ -50,8 +50,6 @@ export const createAuth0User = async (data: string) => {
     const error = (await res.json()) as { message?: string };
     throw new Error(`Error with auth0 create. - ${error?.message}`);
   }
-
-  return (await res.json()) as GetUsers200ResponseOneOfInner;
 };
 
 export const updateAuth0User = async (data: string, userId: string) => {
@@ -75,10 +73,10 @@ export const updateAuth0User = async (data: string, userId: string) => {
   return (await res.json()) as GetUsers200ResponseOneOfInner;
 };
 
-export const deleteAuth0User = async (userId: string) => {
+export const deleteAuth0User = async (user_id: string) => {
   const token = await getAuth0ManagementAccessToken();
 
-  const res = await fetch(`${env.AUTH0_API_URL}users/${userId}`, {
+  const res = await fetch(`${env.AUTH0_API_URL}users/${user_id}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
@@ -91,4 +89,31 @@ export const deleteAuth0User = async (userId: string) => {
     const error = (await res.json()) as { message?: string };
     throw new Error(`Error with auth0 delete. - ${error.message}`);
   }
+};
+
+export type UserEntry = {
+  email: string;
+  name: string;
+  user_id: string;
+  user_metadata: { admin: boolean };
+};
+
+export const getAuth0Users = async () => {
+  const token = await getAuth0ManagementAccessToken();
+
+  const res = await fetch(`${env.AUTH0_API_URL}users`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });
+
+  if (res.status !== 200) {
+    const error = (await res.json()) as { message?: string };
+    throw new Error(`Error with auth0 GET. - ${error?.message}`);
+  }
+
+  return (await res.json()) as UserEntry[];
 };

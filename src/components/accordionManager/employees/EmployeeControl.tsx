@@ -4,6 +4,7 @@ import { type AccordionItemProps } from "../types";
 import { AccordionHeader } from "../AccordionHeader";
 import { api } from "~/utils/api";
 import { EmployeeForm } from "./EmployeeForm";
+import { useSession } from "next-auth/react";
 
 export type EmployeeInput = {
   name: string;
@@ -18,6 +19,7 @@ export const EmployeeItem = ({ open, toggle, title }: AccordionItemProps) => {
   const [password, setPassword] = useState<string>("");
   const [admin, setIsAdmin] = useState<boolean>(false);
   const [passwordVerifier, setPasswordVerifier] = useState<string>("");
+  const session = useSession();
 
   const trpcUtils = api.useUtils();
 

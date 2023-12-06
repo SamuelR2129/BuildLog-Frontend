@@ -5,8 +5,6 @@ import {
   type DefaultSession,
   type NextAuthOptions,
 } from "next-auth";
-
-import { env } from "~/env.mjs";
 import { db } from "~/server/db";
 import Auth0Provider from "next-auth/providers/auth0";
 /**

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { env } from "~/env.mjs";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import {
   createAuth0User,
@@ -114,15 +115,6 @@ export const manageEmployeesRouter = createTRPCRouter({
         const authRes = await createAuth0User(data);
 
         if (authRes instanceof Error) throw new Error(authRes.message);
-
-        return await ctx.db.user.create({
-          data: {
-            id: authRes.user_id,
-            name,
-            email,
-            admin,
-          },
-        });
       },
     ),
 });

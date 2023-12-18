@@ -12,17 +12,21 @@ const style = {
   input: `text-base pl-1 ml-2 rounded border`,
 };
 
-export type UserValue = {
+export interface UserValue {
   email: string;
   name: string;
   password?: string;
   admin: boolean;
-};
+}
+
+export interface UpdateUserValue extends UserValue {
+  compareEmail: string;
+}
 
 type EntryProps = {
   user_id: string;
-  value: UserEntry;
-  updateFormEntry: (user_id: string, value: UserValue) => void;
+  employee: UserEntry;
+  updateFormEntry: (user_id: string, employee: UpdateUserValue) => void;
   deleteFormEntry: (user_id: string) => void;
   admin: boolean;
   setIsAdmin: (admin: boolean) => void;
@@ -30,14 +34,14 @@ type EntryProps = {
 
 const EmployeeFormEntry = ({
   user_id,
-  value,
+  employee,
   updateFormEntry,
   deleteFormEntry,
   setIsAdmin,
   admin,
 }: EntryProps) => {
-  const [editedNameValue, setEditedNameValue] = useState(value.name);
-  const [editedEmailValue, setEditedEmailValue] = useState(value.email);
+  const [editedNameValue, setEditedNameValue] = useState(employee.name);
+  const [editedEmailValue, setEditedEmailValue] = useState(employee.email);
   const [editedPasswordValue, setEditedPasswordValue] = useState<
     string | undefined
   >();
@@ -62,6 +66,7 @@ const EmployeeFormEntry = ({
                 name: editedNameValue,
                 email: editedEmailValue,
                 password: editedPasswordValue,
+                compareEmail: employee.email,
                 admin,
               })
             }
@@ -74,7 +79,7 @@ const EmployeeFormEntry = ({
         <div className="flex flex-col">
           <div className="flex">
             {!isEditing ? (
-              <p className={style.text}>{value.name}</p>
+              <p className={style.text}>{employee.name}</p>
             ) : (
               <input
                 className={style.input}
@@ -85,7 +90,7 @@ const EmployeeFormEntry = ({
             )}
 
             {!isEditing ? (
-              <p className={style.text}>{value.email}</p>
+              <p className={style.text}>{employee.email}</p>
             ) : (
               <input
                 className={style.input}
@@ -103,10 +108,10 @@ const EmployeeFormEntry = ({
                 <input
                   className={style.input}
                   type="checkbox"
-                  onChange={() => setIsAdmin(!!admin)}
+                  onChange={() => setIsAdmin(!admin)}
                 />
               </div>
-            ) : value?.user_metadata?.admin ? (
+            ) : employee?.app_metadata?.admin ? (
               <span className="pl-2 text-blue-400">Admin</span>
             ) : null}
 

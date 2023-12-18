@@ -2,8 +2,7 @@ import { VscAdd } from "react-icons/vsc";
 import { LoadingSpinner } from "../../LoadingSpinner";
 import { IconHoverEffect } from "../../IconHoverEffect";
 import { type FormEvent } from "react";
-import EmployeeFormEntry from "./EmployeeFormEntry";
-import { GetUsers200ResponseOneOfInner } from "auth0";
+import EmployeeFormEntry, { UpdateUserValue } from "./EmployeeFormEntry";
 
 const style = {
   form: `flex justify-between`,
@@ -15,7 +14,7 @@ export type UserEntry = {
   email: string;
   name: string;
   user_id: string;
-  user_metadata: { admin: boolean };
+  app_metadata: { admin: boolean };
 };
 
 type FormProps = {
@@ -34,15 +33,7 @@ type FormProps = {
     queryLoading: boolean;
     entriesPresent: boolean | undefined;
     employees: UserEntry[] | undefined;
-    updateFormEntry: (
-      user_id: string,
-      formValue: {
-        name: string;
-        email: string;
-        password?: string;
-        admin: boolean;
-      },
-    ) => void;
+    updateFormEntry: (user_id: string, formValue: UpdateUserValue) => void;
     deleteFormEntry: (user_id: string) => void;
     entryType: string;
     setIsAdmin: (admin: boolean) => void;
@@ -111,7 +102,7 @@ export const EmployeeForm = ({
                 onChange={(e) => setPasswordVerifier(e.target.value)}
               />
             </div>
-            <div className="my-2 flex flex-grow">
+            <div className="mt-1 flex flex-grow">
               <span className=" text-gray-500">User is admin: </span>
               <div className="flex items-center pl-2">
                 <input
@@ -147,7 +138,7 @@ export const EmployeeForm = ({
                     <EmployeeFormEntry
                       key={index}
                       user_id={employee.user_id}
-                      value={employee}
+                      employee={employee}
                       updateFormEntry={updateFormEntry}
                       deleteFormEntry={deleteFormEntry}
                       admin={admin}

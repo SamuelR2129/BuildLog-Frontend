@@ -13,7 +13,7 @@ import {
 export const SideNav = () => {
   const session = useSession();
   const user = session.data?.user;
-  console.log("SESSION USER", user);
+
   return (
     <nav className="sticky top-0  py-4 md:px-2">
       <ul className="flex flex-col items-center gap-2 whitespace-nowrap md:items-start">

@@ -70,7 +70,7 @@ export const updateAuth0User = async (data: string, userId: string) => {
     throw new Error(`Error with auth0 update. - ${error?.message}`);
   }
 
-  return (await res.json()) as GetUsers200ResponseOneOfInner;
+  return (await res.json()) as UserEntry;
 };
 
 export const deleteAuth0User = async (user_id: string) => {
@@ -95,7 +95,7 @@ export type UserEntry = {
   email: string;
   name: string;
   user_id: string;
-  user_metadata: { admin: boolean };
+  app_metadata: { admin: boolean };
 };
 
 export const getAuth0Users = async () => {

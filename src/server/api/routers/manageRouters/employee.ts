@@ -9,7 +9,7 @@ import {
 } from "~/server/auth0";
 
 type UpdateOptions = {
-  email: string;
+  email?: string;
   name: string;
   password?: string;
   app_metadata: { admin: boolean };
@@ -29,25 +29,23 @@ export const manageEmployeesRouter = createTRPCRouter({
       z.object({
         user_id: z.string(),
         name: z.string(),
-        email: z.string(),
+        email: z.string().optional(),
         password: z.string().optional(),
         admin: z.boolean(),
       }),
     )
-    .mutation(
-      async ({ input: { user_id, name, email, password, admin }, ctx }) => {
-        const auth0Options: UpdateOptions = {
-          email,
-          name,
-          app_metadata: { admin },
-          connection: "Username-Password-Authentication",
-        };
+    .mutation(async ({ input: { user_id, name, email, password, admin } }) => {
+      const auth0Options: UpdateOptions = {
+        email,
+        name,
+        app_metadata: { admin },
+        connection: "Username-Password-Authentication",
+      };
 
-        if (password) auth0Options.password = password;
+      if (password) auth0Options.password = password;
 
-        await updateAuth0User(JSON.stringify(auth0Options), user_id);
-      },
-    ),
+      return await updateAuth0User(JSON.stringify(auth0Options), user_id);
+    }),
 
   deleteEmployee: protectedProcedure
     .input(

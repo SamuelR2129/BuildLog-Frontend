@@ -3,12 +3,14 @@ import { Collapse } from "react-collapse";
 import { type AccordionItemProps } from "../types";
 import { AccordionHeader } from "../AccordionHeader";
 import { api } from "~/utils/api";
-import { EmployeeForm, UserEntry } from "./EmployeeForm";
+import { EmployeeForm, type UserEntry } from "./EmployeeForm";
 import { useSession } from "next-auth/react";
+import { type UpdateUserValue } from "./EmployeeFormEntry";
 
-export type EmployeeInput = {
+export type UpdateData = {
+  user_id: string;
   name: string;
-  email: string;
+  email?: string;
   password?: string;
   admin: boolean;
 };
@@ -21,6 +23,7 @@ export const EmployeeItem = ({ open, toggle, title }: AccordionItemProps) => {
   const [employees, setEmployees] = useState<UserEntry[]>();
   const [passwordVerifier, setPasswordVerifier] = useState<string>("");
   const session = useSession();
+  console.log(session);
 
   const trpcUtils = api.useUtils();
 
@@ -54,8 +57,20 @@ export const EmployeeItem = ({ open, toggle, title }: AccordionItemProps) => {
   });
 
   const updateMutation = api.manageEmployees.updateEmployee.useMutation({
-    onSuccess: async () => {
-      await trpcUtils.manageEmployees.getEmployees.invalidate();
+    onSuccess: (data) => {
+      const newEmployees = employees?.map((employee) => {
+        if (employee.user_id === data.user_id) {
+          return {
+            email: data.email,
+            name: data.name,
+            user_id: data.user_id,
+            app_metadata: { admin: data.app_metadata.admin },
+          };
+        }
+        return employee;
+      });
+
+      setEmployees(newEmployees);
     },
     onError: (e) => {
       console.error(e);
@@ -96,19 +111,22 @@ export const EmployeeItem = ({ open, toggle, title }: AccordionItemProps) => {
       alert("Passwords need to match exactly.");
       return;
     }
-
     createMutation.mutate({ email, name, password, passwordVerifier, admin });
   };
 
   //update employee
-  const updateFormEntry = (user_id: string, formValue: EmployeeInput) => {
-    updateMutation.mutate({
+  const updateFormEntry = (user_id: string, formValue: UpdateUserValue) => {
+    const updateData: UpdateData = {
       user_id,
-      email: formValue.email,
       name: formValue.name,
       password: formValue.password,
       admin: formValue.admin,
-    });
+    };
+
+    if (formValue.email !== formValue.compareEmail)
+      updateData.email = formValue.email;
+
+    updateMutation.mutate(updateData);
   };
 
   //delete employee
@@ -117,8 +135,6 @@ export const EmployeeItem = ({ open, toggle, title }: AccordionItemProps) => {
   };
 
   const entriesPresent = employees && employees.length > 0;
-
-  console.log(data?.employees);
 
   const formProps = {
     createEntry: createEntry,

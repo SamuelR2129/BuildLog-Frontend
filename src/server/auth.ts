@@ -4,9 +4,14 @@ import {
   getServerSession,
   type DefaultSession,
   type NextAuthOptions,
+  User,
+  Profile,
 } from "next-auth";
 import { db } from "~/server/db";
 import Auth0Provider from "next-auth/providers/auth0";
+import { jwtDecode } from "jwt-decode";
+import { env } from "~/env.mjs";
+
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
  * object and keep type safety.
@@ -16,6 +21,7 @@ import Auth0Provider from "next-auth/providers/auth0";
 declare module "next-auth" {
   interface Session extends DefaultSession {
     user: DefaultSession["user"] & {
+      admin: boolean;
       id: string;
       // ...other properties
       // role: UserRole;
@@ -35,20 +41,51 @@ declare module "next-auth" {
  */
 export const authOptions: NextAuthOptions = {
   callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
-      },
-    }),
+    signIn: ({ user, account, profile }) => {
+      // Assuming Auth0 provider is used
+      // console.log("user", user);
+      // console.log("account", account);
+      // console.log("profile", profile);
+
+      // if (account.provider === "auth0") {
+      //   const { app_metadata } = profile;
+
+      //   if (app_metadata && app_metadata.admin) {
+      //     // Check if the admin field is already set in the Prisma database
+      //     const existingUser = await db.user.findUnique({
+      //       where: { email: user.email },
+      //       select: { admin: true },
+      //     });
+
+      //     // Update the user in the Prisma database only if admin is not set
+      //     if (!existingUser.admin) {
+      //       await prisma.user.update({
+      //         where: { email: user.email },
+      //         data: {
+      //           admin: app_metadata.admin,
+      //         },
+      //       });
+      //     }
+      //   }
+      // }
+      return Promise.resolve(true);
+    },
+    session: ({ session, user }) => {
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id: user.id,
+        },
+      };
+    },
   },
   adapter: PrismaAdapter(db),
   providers: [
     Auth0Provider({
-      clientId: process.env.AUTH0_CLIENT_ID!,
-      clientSecret: process.env.AUTH0_CLIENT_SECRET!,
-      issuer: process.env.AUTH0_ISSUER_BASE_URL,
+      clientId: env.AUTH0_CLIENT_ID,
+      clientSecret: env.AUTH0_CLIENT_SECRET,
+      issuer: env.AUTH0_ISSUER_BASE_URL,
     }),
     /**
      * ...add more providers here.

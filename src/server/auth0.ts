@@ -1,4 +1,3 @@
-import { type GetUsers200ResponseOneOfInner } from "auth0";
 import { env } from "~/env.mjs";
 
 type AccessToken = {

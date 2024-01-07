@@ -1,3 +1,4 @@
+import { useSession } from "next-auth/react";
 import React, { useState } from "react";
 import { BuildSiteControl } from "~/components/accordionManager/BuildSiteControl";
 import { EmployeeItem } from "~/components/accordionManager/employees/EmployeeControl";
@@ -6,6 +7,8 @@ import { Header } from "~/components/Header";
 
 const Manage = () => {
   const [open, setOpen] = useState<number | null | boolean>(false);
+  const session = useSession();
+  const user = session.data?.user;
 
   const toggle = (index: number) => {
     if (open === index) {
@@ -14,6 +17,14 @@ const Manage = () => {
 
     setOpen(index);
   };
+
+  if (session.status !== "authenticated") {
+    return <h1>Please sign in, you are unauthenticated.</h1>;
+  }
+
+  if (!user?.admin) {
+    return <h1>You are not an admin.</h1>;
+  }
 
   return (
     <>

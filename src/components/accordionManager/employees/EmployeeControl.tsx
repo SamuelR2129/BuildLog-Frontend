@@ -22,8 +22,6 @@ export const EmployeeItem = ({ open, toggle, title }: AccordionItemProps) => {
   const [admin, setIsAdmin] = useState<boolean>(false);
   const [employees, setEmployees] = useState<UserEntry[]>();
   const [passwordVerifier, setPasswordVerifier] = useState<string>("");
-  const session = useSession();
-  console.log(session);
 
   const trpcUtils = api.useUtils();
 

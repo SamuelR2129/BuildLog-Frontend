@@ -1,3 +1,4 @@
+import { useSession } from "next-auth/react";
 import React, { type FormEvent, useState } from "react";
 import { Button } from "~/components/Button";
 import { Header } from "~/components/Header";
@@ -8,6 +9,8 @@ const Subbies = () => {
   const [hoursValue, setHoursValue] = useState<string>();
   const [costsValue, setCostsValue] = useState<string>();
   const [subbieValue, setSubbieName] = useState<string>();
+  const session = useSession();
+  const user = session.data?.user;
 
   const { data, isLoading, isError } = api.manageSubbies.getSubbies.useQuery(
     {},
@@ -43,6 +46,14 @@ const Subbies = () => {
   };
 
   const subbieNamesPresent = data && data.subbies.length > 0;
+
+  if (session.status !== "authenticated") {
+    return <h1>Please sign in, you are unauthenticated.</h1>;
+  }
+
+  if (!user?.admin) {
+    return <h1>You are not an admin.</h1>;
+  }
 
   return (
     <>

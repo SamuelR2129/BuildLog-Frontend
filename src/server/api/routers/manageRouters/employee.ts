@@ -53,13 +53,8 @@ export const manageEmployeesRouter = createTRPCRouter({
         user_id: z.string(),
       }),
     )
-    .mutation(async ({ input: { user_id }, ctx }) => {
-      console.log("USERID", user_id);
+    .mutation(async ({ input: { user_id } }) => {
       await deleteAuth0User(user_id);
-      await ctx.db.user.delete({
-        where: {},
-      });
-      return user_id;
     }),
 
   createEmployee: protectedProcedure

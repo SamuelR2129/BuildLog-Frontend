@@ -4,8 +4,12 @@ import { LoadingSpinner } from "~/components/LoadingSpinner";
 import { Table } from "~/components/tables/Table";
 import { api } from "~/utils/api";
 import { mapTableDataForThePage } from "../pageUtils/clientTableUtils";
+import { useSession } from "next-auth/react";
 
 const Tables = () => {
+  const session = useSession();
+  const user = session.data?.user;
+
   const data = api.table.tableData.useQuery(
     {},
     { getNextPageParam: (lastPage) => lastPage.nextCursor },
@@ -28,6 +32,14 @@ const Tables = () => {
 
   if (subbieData.isLoading || !subbieData) {
     return <LoadingSpinner />;
+  }
+
+  if (session.status !== "authenticated") {
+    return <h1>Please sign in, you are unauthenticated.</h1>;
+  }
+
+  if (!user?.admin) {
+    return <h1>You are not an admin.</h1>;
   }
 
   const weeklyTableProps = mapTableDataForThePage(

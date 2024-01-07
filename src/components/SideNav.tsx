@@ -31,43 +31,46 @@ export const SideNav = () => {
                 </IconHoverEffect>
               </Link>
             </li>
-            <li>
-              <Link href={"/tables"}>
-                <IconHoverEffect>
-                  <span className="item-center flex flex-col items-center md:flex-row  md:gap-4">
-                    <VscTable className="ml-[2px] h-6 w-6 fill-blue-500" />
-                    <span className="mt-[2px] self-center  text-[0.62rem] text-blue-500 md:text-sm">
-                      Tables
-                    </span>
-                  </span>
-                </IconHoverEffect>
-              </Link>
-            </li>
-            <li>
-              <Link href={"/subbies"}>
-                <IconHoverEffect>
-                  <span className="item-center flex flex-col items-center md:flex-row  md:gap-4">
-                    <VscOrganization className="h-6 w-6 fill-blue-500" />
-                    <span className="mt-[2px] self-center  text-[0.62rem] text-blue-500 md:text-sm">
-                      Subbies
-                    </span>
-                  </span>
-                </IconHoverEffect>
-              </Link>
-            </li>
-            <li>
-              <Link href={"/manage"}>
-                <IconHoverEffect>
-                  <span className="item-center flex flex-col items-center md:flex-row  md:gap-4">
-                    <VscListUnordered className="h-6 w-6 fill-blue-500" />
-                    <span className="mt-[2px] self-center  text-[0.62rem] text-blue-500 md:text-sm">
-                      Manage
-                    </span>
-                  </span>
-                </IconHoverEffect>
-              </Link>
-            </li>
-
+            {user.admin && (
+              <>
+                <li>
+                  <Link href={"/tables"}>
+                    <IconHoverEffect>
+                      <span className="item-center flex flex-col items-center md:flex-row  md:gap-4">
+                        <VscTable className="ml-[2px] h-6 w-6 fill-blue-500" />
+                        <span className="mt-[2px] self-center  text-[0.62rem] text-blue-500 md:text-sm">
+                          Tables
+                        </span>
+                      </span>
+                    </IconHoverEffect>
+                  </Link>
+                </li>
+                <li>
+                  <Link href={"/subbies"}>
+                    <IconHoverEffect>
+                      <span className="item-center flex flex-col items-center md:flex-row  md:gap-4">
+                        <VscOrganization className="h-6 w-6 fill-blue-500" />
+                        <span className="mt-[2px] self-center  text-[0.62rem] text-blue-500 md:text-sm">
+                          Subbies
+                        </span>
+                      </span>
+                    </IconHoverEffect>
+                  </Link>
+                </li>
+                <li>
+                  <Link href={"/manage"}>
+                    <IconHoverEffect>
+                      <span className="item-center flex flex-col items-center md:flex-row  md:gap-4">
+                        <VscListUnordered className="h-6 w-6 fill-blue-500" />
+                        <span className="mt-[2px] self-center  text-[0.62rem] text-blue-500 md:text-sm">
+                          Manage
+                        </span>
+                      </span>
+                    </IconHoverEffect>
+                  </Link>
+                </li>
+              </>
+            )}
             <li>
               <button onClick={() => void signOut()}>
                 <IconHoverEffect red>

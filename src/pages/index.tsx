@@ -1,9 +1,7 @@
 import { type NextPage } from "next";
-import { signIn, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useState } from "react";
-import { VscSignIn } from "react-icons/vsc";
 import { Header } from "~/components/Header";
-import { IconHoverEffect } from "~/components/IconHoverEffect";
 import { InfiniteTweetList } from "~/components/feed/InfiniteTweetList";
 import { NewPostForm } from "~/components/feed/NewPostForm";
 import { api } from "~/utils/api";

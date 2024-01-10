@@ -30,6 +30,7 @@ declare module "next-auth" {
       email?: string | null;
       image?: string | null;
       admin?: boolean | null;
+      id: string;
     };
     expires: ISODateString;
   }

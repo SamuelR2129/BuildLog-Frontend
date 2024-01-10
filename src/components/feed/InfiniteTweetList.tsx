@@ -32,7 +32,10 @@ const TweetCard = ({
 }: Tweet) => {
   const [isLoading, setIsLoading] = useState(false);
   const session = useSession();
-  const sessionUser = session.data?.user.id;
+  const sessionUserId = session?.data?.user?.id;
+
+  console.log(user);
+  console.log(session.data?.user);
 
   const deletePost = api.tweet.deletePost.useMutation({
     onSuccess: () => {
@@ -70,7 +73,7 @@ const TweetCard = ({
 
             <p className="whitespace-pre-wap">{content}</p>
           </div>
-          {user.id === sessionUser ? (
+          {user.id === sessionUserId ? (
             <div className="h-fit">
               <VscTrash
                 size={20}

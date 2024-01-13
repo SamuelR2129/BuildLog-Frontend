@@ -68,7 +68,7 @@ export const authOptions: NextAuthOptions = {
       });
 
       //bug: if user tries to update admin from false to true, will it update?????
-      if (prismaUser && typeof prismaUser.admin === null) {
+      if (prismaUser && prismaUser.admin === null) {
         const updatedUser = await db.user.update({
           where: {
             email: prismaUser?.email,

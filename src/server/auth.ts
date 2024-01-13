@@ -5,12 +5,11 @@ import {
   type NextAuthOptions,
   type User,
   type Profile,
-  type Session,
   type Account,
   type AuthProfile,
   type CustomSession,
-  ISODateString,
-  DefaultSession,
+  type ISODateString,
+  type DefaultSession,
 } from "next-auth";
 import { db } from "~/server/db";
 import Auth0Provider from "next-auth/providers/auth0";
@@ -68,18 +67,23 @@ export const authOptions: NextAuthOptions = {
         },
       });
 
-      const updatedUser = await db.user.update({
-        where: {
-          email: prismaUser?.email,
-        },
-        data: {
-          admin: profile?.admin ?? false,
-        },
-      });
+      //bug: if user tries to update admin from false to true, will it update?????
+      if (prismaUser && typeof prismaUser.admin === null) {
+        const updatedUser = await db.user.update({
+          where: {
+            email: prismaUser?.email,
+          },
+          data: {
+            admin: profile?.admin ?? false,
+          },
+        });
 
-      if (!updatedUser.admin) {
-        console.error("There was an error adding admin to a user.");
+        if (!updatedUser.admin) {
+          console.error("There was an error adding admin to a user.");
+        }
       }
+
+      console.log("USER AUTH", user, "PRISMAUSER", prismaUser);
 
       return Promise.resolve(true);
     },

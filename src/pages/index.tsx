@@ -14,12 +14,10 @@ const Home: NextPage = () => {
     {},
   );
 
+  console.log("SESSION USER", user);
+
   if (session.status !== "authenticated") {
     return <h1>Please sign in, you are unauthenticated.</h1>;
-  }
-
-  if (!user?.admin) {
-    return <h1>You are not an admin.</h1>;
   }
 
   return (

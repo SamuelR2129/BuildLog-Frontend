@@ -2,13 +2,20 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { type GetServerSidePropsContext } from "next";
 import {
   getServerSession,
-  type DefaultSession,
   type NextAuthOptions,
+  type User,
+  type Profile,
+  type Session,
+  type Account,
+  type AuthProfile,
+  type CustomSession,
+  ISODateString,
+  DefaultSession,
 } from "next-auth";
-
-import { env } from "~/env.mjs";
 import { db } from "~/server/db";
-import GoogleProvider from "next-auth/providers/google";
+import Auth0Provider from "next-auth/providers/auth0";
+import { env } from "~/env.mjs";
+import { type AdapterUser } from "next-auth/adapters";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -18,18 +25,34 @@ import GoogleProvider from "next-auth/providers/google";
  */
 declare module "next-auth" {
   interface Session extends DefaultSession {
-    user: DefaultSession["user"] & {
+    user?: {
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+      admin?: boolean | null;
       id: string;
-      // ...other properties
-      // role: UserRole;
     };
+    expires: ISODateString;
+  }
+  interface CustomSession {
+    session: Session;
+    user: AuthUser;
   }
 
-  // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
-  // }
+  interface AuthUser extends AdapterUser {
+    admin?: boolean;
+  }
+
+  interface AuthProfile extends Profile {
+    admin?: boolean;
+  }
 }
+
+type SignInCallback = {
+  user: User | AdapterUser;
+  account: Account | null;
+  profile?: AuthProfile | undefined;
+};
 
 /**
  * Options for NextAuth.js used to configure adapters, providers, callbacks, etc.
@@ -38,19 +61,45 @@ declare module "next-auth" {
  */
 export const authOptions: NextAuthOptions = {
   callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
-      },
-    }),
+    signIn: async ({ user, profile }: SignInCallback) => {
+      const prismaUser = await db.user.findUnique({
+        where: {
+          email: user.email ?? "",
+        },
+      });
+
+      const updatedUser = await db.user.update({
+        where: {
+          email: prismaUser?.email,
+        },
+        data: {
+          admin: profile?.admin ?? false,
+        },
+      });
+
+      if (!updatedUser.admin) {
+        console.error("There was an error adding admin to a user.");
+      }
+
+      return Promise.resolve(true);
+    },
+    session: ({ session, user }: CustomSession) => {
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id: user.id,
+          admin: user.admin,
+        },
+      };
+    },
   },
   adapter: PrismaAdapter(db),
   providers: [
-    GoogleProvider({
-      clientId: env.GOOGLE_CLIENT_ID,
-      clientSecret: env.GOOGLE_CLIENT_SECRET,
+    Auth0Provider({
+      clientId: env.AUTH0_CLIENT_ID,
+      clientSecret: env.AUTH0_CLIENT_SECRET,
+      issuer: env.AUTH0_ISSUER_BASE_URL,
     }),
     /**
      * ...add more providers here.
